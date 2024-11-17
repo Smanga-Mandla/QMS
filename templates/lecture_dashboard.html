@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+      <link rel="icon" href="{{ url_for('static', filename='images/head13.jpeg') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_lecture.css') }}">
+     
+    
+    <style>
+#session-warning-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 50%;
+    top: 20%;
+    transform: translate(-50%, -50%);
+    background-color: #007BFF;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+#session-warning-modal h3 {
+    margin-top: 0;
+}
+
+#session-warning-modal button {
+    margin-right: 10px;
+}
+
+
+ 
+
+.event-day {
+    background-color: #FFD700;
+    cursor: pointer;
+}
+
+.event-day:hover {
+    background-color: #FFA500;
+}
+
+
+.container.calendar {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.weekday, .days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    direction: ltr; /* Ensures left-to-right layout */
+    border: 1px solid white;
+}
+
+.weekday div, .days div {
+    padding: 10px;
+    border: 1px solid white;
+    background-color: white;
+    margin: 0px 0 0;
+    text-align: left; /* Align text to the left */
+}
+
+.days div {
+    border: 1px solid #ddd;
+    min-height: 100px;
+    position: relative;
+    padding: 5px;
+    background-color: white;
+    text-align: left; /* Align text to the left */
+}
+
+/* Highlight current day */
+.current-day {
+    background-color: #ffefc5;
+    border: 1px solid #ffc107;
+    font-weight: 300;
+}
+
+.event-list {
+    list-style: none;
+    margin: 10px 0 0; /* Align events to the top left inside the day cell */
+    padding: 0;
+    text-align: left; /* Ensure the events align to the left */
+    margin-right: 10px;
+}
+
+.event-list .event-title {
+    font-weight: 400;
+    color: red; /* Make event titles red */
+    margin-bottom: 10px;
+    white-space: pre-wrap; /* Preserve line breaks and break after each word */
+    word-break: break-word; /* Allow words to break if necessary */
+    display: block; /* Ensure each word starts on a new line */
+    margin-right: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+/* Remove default list styling */
+.no-bulletss {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0; /* Remove padding */
+    margin: 0; /* Remove margin */
+}
+
+/* Style for each event panel */
+.event-panell {
+    background-color:  white; /* Light blue background */
+    border: 1px solid red; /* Light gray border */
+    border-radius: 15px; /* Rounded corners */
+    padding: 20px; /* Inner spacing */
+    margin: 10px 0; /* Space between items */
+    transition: background-color 0.3s, transform 0.3s; /* Smooth hover effect */
+     
+}
+
+/* Hover effect */
+.event-panell:hover {
+    background-color:  white; /* Slightly darker blue on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+    
+}
+
+/* Style for links */
+.event-panell a {
+    text-decoration: none; /* Remove underline from links */
+    color:  rgba(0, 0, 0, 0.778); /* Bootstrap primary color */
+    
+    font-size: medium; /* Slightly larger font size */
+}
+
+/* Change link color on hover */
+.event-panell a:hover {
+    color:  red; /* Darker blue on hover */
+}
+
+
+
+
+/* Footer */
+footer {
+            background-color:white;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            bottom: 0;
+            width: 98%;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        footer a {
+            color: #333;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+            color: #007BFF;
+        }
+
+
+        .contentt {
+            background-color: hsla(224, 90%, 51%, 0.151); /* Light background color for panel */
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 1000px;
+    top: 80px;
+    
+        }
+
+/* Position the toggle button */
+.toggle-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: orange;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* Style for hiding the panel */
+.hidden-panel {
+    display: none;
+}
+
+
+.event-header {
+    display: flex;                /* Use flexbox for horizontal alignment */
+    align-items: center;          /* Vertically center the items */
+    justify-content: flex-start;  /* Align the items to the left */
+    font-size: 19px;
+    
+    color: rgba(0, 0, 0, 0.716);
+    text-decoration: none;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+    text-align: left;
+}
+
+.event-icon {
+    width: 40px;                  /* Icon width */
+    height: 40px;                 /* Icon height */
+    margin-right: 10px;           /* Space between the icon and title */
+    object-fit: contain;          /* Ensure the icon maintains its aspect ratio */
+}
+
+.event-header a {
+   
+    color: rgba(0, 0, 0, 0.801);
+    text-decoration: none;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+    text-align: left;              /* Ensure the text aligns left */
+    display: inline-block;         /* Ensures the link behaves as a block-level element */
+    margin-left: 0;                /* Remove any default left margin (if any) */
+}
+
+.event-header a:hover {
+    color: red;
+    text-decoration: underline;
+}
+
+.event-card {
+    background-color: #fff;
+    border: 1px solid red;
+    border-radius: 6px;
+    padding: 5px;
+    margin-bottom: px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 40px;
+}
+ 
+
+.event-cardd {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 5px;
+    margin-bottom: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+
+
+
+    </style>
+
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/ump-logo2.png') }}" alt="Logo">
+        </div>
+        <div class="links">
+           
+               <a href="{{ url_for('lecture_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('my_courses_lecture') }}">My Courses</a>
+
+            <div class="profile">
+                 <div class="initials" onclick="toggleDropdown('profile-dropdown')">{{ user_initials }}</div>
+                <div class="notifications" onclick="toggleDropdown('notifications-dropdown')">&#128276;</div>
+              <div class="dropdown" id="profile-dropdown">
+    <a href="{{ url_for('profile_lecture') }}">User-profile</a>
+    <a href="#settings">Settings</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</div>
+
+                <div class="notifications-dropdown" id="notifications-dropdown">
+                    <div>You have a new message</div>
+                    <div>Assignment due tomorrow</div>
+                    <div>Meeting at 3 PM</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="top-row">
+            <div class="welcome-message">Hi {{ session['name'] }}  ! &#128075;</div>
+            
+          
+        </div>
+
+
+<div id="session-warning-modal" style="display:none; position:fixed; top:20%; left:50%; transform:translate(-50%, -50%); z-index:999; background: #007BFF; padding:20px; border:1px solid #000;">
+    <h2>Your session is about to expire!</h2>
+    <p>Do you want to extend your session?</p>
+    <button onclick="extendSession()">Extend Session</button>
+    <button onclick="logout()">Log Out</button>
+</div>
+   <div class="contentt">
+    <h2>Dashboard</h2>
+<div class="container">
+    <div class="timeline-panel">
+        <div class="timeline-header">
+            <h2>Timeline</h2>
+            <form class="search-form">
+                <input type="text" placeholder="Search event..." id="search-field">
+                <button type="button" onclick="searchEvent()">Search</button>
+            </form>
+        </div>
+        <div class="events-container">
+            <ul class="no-bullets" id="eventList">
+                {% for event in events %}
+                <li class="event-panel">
+                    <div class="event-cardd">
+                        <div class="event-header">
+                            <img src="{{ url_for('static', filename='images/th.jfif') }}" alt="Event Icon" class="event-icon">
+                           
+                            <a href="{{ url_for('submit_document', module_id=event.module_id, event_id=event.id) }}" target="_blank">
+                                {{ event.title }}
+                            </a>
+
+                        </div>
+                        <div class="event-date">
+                            Closes on: {{ event.closing_date }}
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+         <!-- My Courses Panel -->
+       <div class="my-courses-panel">
+    <h2>My Courses</h2>
+    <div class="modules-container">
+        {% for module in modules %}
+        <div class="module-item">
+
+            <img src="{{ url_for('static', filename='images/course.png') }}" alt="Course Icon" class="course-icon">
+            <a href="{{ url_for('view_module_l', module_id=module.id) }}">{{ module.module_code }}: {{ module.module_name }}</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="upcoming-events-panel">
+    <button id="togglePanelBtn" class="toggle-btn">▼</button>
+    <h2>Upcoming Events</h2>
+    
+        {% for event in events %}
+        <div class="event-card">
+            <div class="event-header">
+                <a href="{{ url_for('submit_document', module_id=event.module_id, event_id=event.id) }}" target="_blank">
+                    {{ event.title }}
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </ul>
+</div>
+
+
+
+
+
+<div class="container calendar">
+    <div class="header">
+        <h1>Calendar</h1>
+        <div class="month">
+            <button class="arrow" id="prev-month">←</button>
+            <span id="month-year"></span>
+            <button class="arrow" id="next-month">→</button>
+        </div>
+    </div>
+    <div class="weekday">
+        <div>Sun</div>
+        <div>Mon</div>
+        <div>Tue</div>
+        <div>Wed</div>
+        <div>Thu</div>
+        <div>Fri</div>
+        <div>Sat</div>
+    </div>
+    <div class="days" id="days"></div>
+</div>
+
+<script>
+    const daysContainer = document.getElementById('days');
+    const monthYearLabel = document.getElementById('month-year');
+    const prevButton = document.getElementById('prev-month');
+    const nextButton = document.getElementById('next-month');
+
+    let currentDate = new Date();
+
+    function fetchEvents(year, month) {
+        // Fetch events from Python using an API endpoint
+        fetch(`/api/events?year=${year}&month=${month + 1}`)
+            .then(response => response.json())
+            .then(data => renderCalendar(year, month, data))
+            .catch(error => console.error('Error fetching events:', error));
+    }
+
+    function renderCalendar(year, month, events) {
+        daysContainer.innerHTML = '';
+        monthYearLabel.textContent = new Date(year, month).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const lastDate = new Date(year, month + 1, 0).getDate();
+
+        // Get today's date
+        const today = new Date();
+        const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+
+        // Fill in the empty cells before the first day
+        for (let i = 0; i < firstDay; i++) {
+            const emptyCell = document.createElement('div');
+            daysContainer.appendChild(emptyCell);
+        }
+
+        // Fill in the days of the month
+        for (let day = 1; day <= lastDate; day++) {
+            const dayCell = document.createElement('div');
+            dayCell.textContent = day;
+
+            // Highlight current day
+            if (isCurrentMonth && day === today.getDate()) {
+                dayCell.classList.add('current-day');
+            }
+
+            const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            if (events[dateKey]) {
+                const eventList = document.createElement('ul');
+                eventList.classList.add('event-list');
+                events[dateKey].forEach(event => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = event;
+                    listItem.classList.add('event-title'); // Add a class for styling
+                    eventList.appendChild(listItem);
+                });
+                dayCell.appendChild(eventList);
+            }
+
+            daysContainer.appendChild(dayCell);
+        }
+    }
+
+    prevButton.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        fetchEvents(currentDate.getFullYear(), currentDate.getMonth());
+    });
+
+    nextButton.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        fetchEvents(currentDate.getFullYear(), currentDate.getMonth());
+    });
+
+    // Initialize calendar with current month and year
+    fetchEvents(currentDate.getFullYear(), currentDate.getMonth());
+</script>
+
+
+
+    </div>
+</div>
+    
+    
+    
+    <footer>
+        <p>&copy; 2024 University of Mpumalanga. All rights reserved.</p>
+        <div>
+            <a href="#terms">Terms of Service</a> | 
+            <a href="#privacy">Privacy Policy</a> | 
+            <a href="#contact">Contact Us</a>
+        </div>
+    </footer>
+
+ 
+
+
+
+
+
+
+    <script src="{{ url_for('static', filename='js/dashboard_lecture.jss') }}"></script>
+
+
+    <script src="{{ url_for('static', filename='js/dashboard_leaders.jss') }}"></script>
+
+
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const panel = document.querySelector(".upcoming-events-panel");
+            const toggleBtn = document.getElementById("togglePanelBtn");
+        
+            function togglePanel() {
+                if (window.innerWidth < 1300) {
+                    panel.classList.add("hidden-panel");
+                    toggleBtn.textContent = "►"; // Arrow right
+                } else {
+                    panel.classList.remove("hidden-panel");
+                    toggleBtn.textContent = "▼"; // Arrow down
+                }
+            }
+        
+            // Initial check
+            togglePanel();
+        
+            // Listen for screen resize
+            window.addEventListener("resize", togglePanel);
+        
+            // Manual toggle when clicking the button
+            toggleBtn.addEventListener("click", function() {
+                panel.classList.toggle("hidden-panel");
+                toggleBtn.textContent = panel.classList.contains("hidden-panel") ? "►" : "▼";
+            });
+        });
+        </script>
+        
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    let sessionTimeout = 10* 60 * 1000;  // 30 minutes in milliseconds
+    let warningTimeout = 9* 60 * 1000;  // Warning at 25 minutes
+    let sessionWarning;
+
+    // Start the session timer when the page loads
+    window.onload = function() {
+        sessionWarning = setTimeout(showSessionWarning, warningTimeout);
+    };
+
+    // Function to show the session expiration warning modal
+    function showSessionWarning() {
+        let extendModal = document.getElementById('session-warning-modal');
+        extendModal.style.display = 'block';
+    }
+
+    // Function to extend the session by making an AJAX call to the server
+    function extendSession() {
+        fetch('/extend_session', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'extended') {
+
+                    // Reset the session timer
+                    clearTimeout(sessionWarning);
+                    sessionWarning = setTimeout(showSessionWarning, warningTimeout);
+                    closeModal();
+                } else {
+                    alert("Your session has expired, please log in again.");
+                    window.location.href = '/sign_in_page';
+                }
+            });
+    }
+
+    // Function to log out
+    function logout() {
+        window.location.href = '/logout';
+    }
+
+    // Function to close the warning modal
+    function closeModal() {
+        let extendModal = document.getElementById('session-warning-modal');
+        extendModal.style.display = 'none';
+    }
+
+    
+function toggleDropdown(dropdownId) {
+    const dropdown = document.getElementById(dropdownId);
+    if (dropdown.style.display === 'block') {
+        dropdown.style.display = 'none';
+    } else {
+        // Hide all dropdowns first
+        document.querySelectorAll('.dropdown, .notifications-dropdown').forEach(d => d.style.display = 'none');
+        // Show the targeted dropdown
+        dropdown.style.display = 'block';
+    }
+}
+</script>
+</body>
+</html>

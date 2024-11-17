@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+      <link rel="icon" href="{{ url_for('static', filename='images/head13.jpeg') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/ump-logo2.png') }}" alt="Logo">
+        </div>
+        <div class="links">
+              <a href="{{ url_for('lecture_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('my_courses_lecture') }}">My Courses</a>
+
+            <div class="profile">
+                <div class="initials" onclick="toggleDropdown('profile-dropdown')">{{ initials }}</div>
+                <div class="notifications" onclick="toggleDropdown('notifications-dropdown')">&#128276;</div>
+                <div class="dropdown" id="profile-dropdown">
+                    <a href="#settings">Settings</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                </div>
+                <div class="notifications-dropdown" id="notifications-dropdown">
+                    <div>You have a new message</div>
+                    <div>Assignment due tomorrow</div>
+                    <div>Meeting at 3 PM</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-container">
+        <div class="profile-pic-container" id="profile-pic-container">
+            <img src="default-pic.png" id="profile-pic">
+        </div>
+        <button id="profile-options-btn">Profile Options</button>
+        <div id="profile-options">
+            <button id="view-profile">View Profile</button>
+            <button id="upload-pic">Upload</button>
+            <button id="delete-profile">Delete</button>
+        </div>
+        <h2>{{ session['name'] }} {{ session['surname'] }}</h2>
+        <label>Email:</label>
+        <input type="text" value="{{ session['email'] }}" readonly>
+        <label>Role:</label>
+        <input type="text" value="{{ role }}" readonly>
+        <label>Qualification:</label>
+        <input type="text" value="{{ qualification }}" readonly>
+        <label>Access Time:</label>
+        <input type="text" id="access-time" value="{{ access_time }}" readonly>
+    </div>
+    <input type="file" id="file-input" accept="image/*" style="display:none;">
+    <script src="{{ url_for('static', filename='js/profile_lecture.js') }}"></script>
+    
+<script>
+    let sessionTimeout = 1* 60 * 1000;  // 30 minutes in milliseconds
+    let warningTimeout = 1* 60 * 1000;  // Warning at 25 minutes
+    let sessionWarning;
+
+    // Start the session timer when the page loads
+    window.onload = function() {
+        sessionWarning = setTimeout(showSessionWarning, warningTimeout);
+    };
+
+    // Function to show the session expiration warning modal
+    function showSessionWarning() {
+        let extendModal = document.getElementById('session-warning-modal');
+        extendModal.style.display = 'block';
+    }
+
+    // Function to extend the session by making an AJAX call to the server
+    function extendSession() {
+        fetch('/extend_session', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'extended') {
+
+                    // Reset the session timer
+                    clearTimeout(sessionWarning);
+                    sessionWarning = setTimeout(showSessionWarning, warningTimeout);
+                    closeModal();
+                } else {
+                    alert("Your session has expired, please log in again.");
+                    window.location.href = '/sign_in_page';
+                }
+            });
+    }
+
+    // Function to log out
+    function logout() {
+        window.location.href = '/logout';
+    }
+
+    // Function to close the warning modal
+    function closeModal() {
+        let extendModal = document.getElementById('session-warning-modal');
+        extendModal.style.display = 'none';
+    }
+
+
+    function toggleDropdown(dropdownId) {
+    const dropdown = document.getElementById(dropdownId);
+    if (dropdown.style.display === 'block') {
+        dropdown.style.display = 'none';
+    } else {
+        // Hide all dropdowns first
+        document.querySelectorAll('.dropdown, .notifications-dropdown').forEach(d => d.style.display = 'none');
+        // Show the targeted dropdown
+        dropdown.style.display = 'block';
+    }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,455 @@
+/* General styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    background-color: #f4f4f4;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color:  white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+.navbar .logo {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .logo img {
+    height: 50px;
+    margin-right: 10px;
+}
+
+.navbar .links {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .links a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: color 0.3s, text-decoration 0.3s; /* Smooth transition for color and underline */
+}
+
+.navbar .links a:hover {
+    color: #007BFF; /* Change to your preferred color */
+    text-decoration: underline; /* Underline on hover */
+}
+
+.navbar .profile {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.navbar .profile .initials {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #0056b3;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.navbar .profile .notifications {
+    position: relative;
+    cursor: pointer;
+}
+
+.navbar .profile .notifications::after {
+    content: '3';
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 5px;
+    font-size: 12px;
+    z-index: 1;
+}
+
+.navbar .profile .dropdown, .navbar .profile .notifications-dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.navbar .profile .dropdown a, .navbar .profile .notifications-dropdown div {
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    display: block;
+}
+
+.navbar .profile .dropdown a:hover, .navbar .profile .notifications-dropdown div:hover {
+    background-color: #f4f4f4;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    padding: 100px 20px 20px;
+    position: relative;
+}
+
+/* Top row containing welcome message and sidebar */
+.top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.welcome-message {
+    position: fixed;
+    font-size: 30px;
+   
+    color: #333;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 0; /* Start with width 0 */
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    background-color: ghostwhite;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    z-index: 1000;
+}
+
+.sidebar a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    color: blue;
+}
+
+.sidebar .closebtn {
+    position: absolute;
+    top: 0;
+    left: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+.openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #007BFF;
+    color: white;
+    padding: 10px 15px
+}
+/* My Courses Panel */
+.my-courses-panel {
+    width: 100%;
+    max-width: 790px;
+    background-color: white;
+    border: 1px solid   black;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    padding: 25px;
+    text-align: left;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Modules container inside My Courses Panel */
+.modules-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.module-item {
+    margin: 5px 0;
+}
+
+.module-item a {
+    text-decoration: none;
+    color:  black;
+
+}
+
+.course-icon {
+    width: 30px; /* Adjust the size as needed */
+    height: 30px; /* Adjust the size as needed */
+    margin-right: 10px; /* Space between icon and text */
+}
+.module-item a {
+    font-weight: 700;
+    color: #242753;
+}
+
+.module-item a:hover {
+    color: #007bff; /* Color when hovering (change this to your preferred color) */
+    text-decoration: underline; /* Underline on hover */
+}
+
+/* Container for Timeline and Calendar */
+.container {
+    width: 100%;
+    max-width: 800px;
+    background-color: #fff;
+    border: 1px solid   black;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.container .logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.container .logo img {
+    max-height: 200px;
+    width: auto;
+}
+
+.timeline-panel h2 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #007BFF;
+    padding-bottom: 10px;
+    font-weight: 600;
+}
+
+.events-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.event-card {
+    background-color: #fff;
+    border: 1px solid white;
+    border-radius: 6px;
+    padding: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.event-date {
+    font-size: 16px;
+    color: #555;
+    font-weight: 600;
+}
+
+.event-type {
+    padding: 5px 10px;
+    border-radius: 4px;
+    color: #fff;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.event-type.assignment {
+    background-color: #28a745; /* Green for assignments */
+}
+
+.event-type.meeting {
+    background-color: #17a2b8; /* Blue for meetings */
+}
+
+.event-type.general {
+    background-color: #6c757d; /* Gray for general events */
+}
+
+.event-body h3 {
+    font-size: 20px;
+    color: #333;
+    margin: 0 0 10px;
+}
+
+.event-body p {
+    font-size: 16px;
+    color: #666;
+    margin: 0;
+}
+
+
+.timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+}
+
+.search-form input[type="text"] {
+    padding: 5px 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+    width: 200px;
+}
+
+.search-form button {
+    padding: 5px 15px;
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.search-form button:hover {
+    background-color: #0056b3;
+}
+/* Calendar Styles */
+.calendar {
+    border: 1px solid  black;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.calendar .header {
+    text-align: center;
+    padding: 1rem;
+    background-color:  #2a3c67;
+    color: #fff;
+}
+
+.calendar .month {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.calendar .arrow {
+    cursor: pointer;
+    padding: 0 1rem;
+}
+
+.calendar .weekday, .calendar .days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.calendar .weekday div, .calendar .days div {
+    width: 100%;
+    padding: 2.5rem;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.calendar .days div {
+    cursor: pointer;
+}
+
+.calendar .days div:hover {
+    background-color: #f0f0f0;
+}
+
+.calendar .days div.current-day {
+    background-color: #ffbb00;
+    color: #fff;
+    border-radius: 50%;
+}
+
+@media screen and (max-height: 450px) {
+    .sidebar {padding-top: 15px;}
+    .sidebar a {font-size: 18px;}
+}
+
+.upcoming-events-panel {
+    width: 250px; /* Set width for the upcoming events panel */
+    position: fixed; /* Make it fixed */
+    top: 120px; /* Adjust based on your navbar height */
+    left: 20px; /* Space from the right */
+    background-color:   white; /* Panel background color */
+    border: 2px solid #ccc; /* Border for the panel */
+    border-radius: 10px; /* Rounded corners */
+    padding: 15px; /* Padding inside the panel */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+    max-height: calc(100vh - 300px); /* Ensure it doesn't overflow the viewport */
+    overflow-y: auto; /* Enable scrolling if content exceeds height */
+    transform: translateY(+20%); /* Adjust position to center vertically */
+    height: 320px;
+}
+
+.upcoming-events-panel h2 {
+    background-color: #003366; /* Dark blue background for the heading */
+    color: white; /* White text color for contrast */
+    padding: 10px; /* Padding inside the header */
+    margin: -15px -15px 15px -15px; /* Negative margin to extend background to panel edges */
+    border-radius: 5px 5px 0 0; /* Rounded corners for the top */
+    
+}
+
+.no-bullets {
+    list-style-type: none; /* Removes bullets */
+    padding-left: 0;      /* Removes left padding */
+}
+
+
+@media screen and (max-width: 500px) {
+    .upcoming-events-panel {
+        width: 50%; /* Adjust width to fit smaller screens */
+        right: 5%; /* Center it horizontally on the screen */
+        top: 100px; /* Adjust top position */
+        max-height: calc(100vh - 200px); /* Allow more space for smaller screens */
+        transform: translateY(0); /* Remove vertical transformation for smaller screens */
+    }
+}
+
+

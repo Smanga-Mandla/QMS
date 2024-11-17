@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password</title>
+      <link rel="icon" href="{{ url_for('static', filename='images/head13.jpeg') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/forgot_pass.css') }}">
+    <style>
+    .login-link {
+        color:  red;               /* Blue color */
+        text-decoration: none;        /* Remove underline */
+        font-size: 16px;              /* Font size */
+        font-weight: bold;            /* Bold font weight */
+        padding: 10px 20px;           /* Padding around the link */
+        border-radius: 5px;           /* Rounded corners */
+        transition: all 0.3s ease;    /* Smooth transition for hover effect */
+    }
+    
+    .login-link:hover {
+        color: #ffffff;               /* White color on hover */
+        background-color: red;    /* Blue background on hover */
+        text-decoration: underline;   /* Underline on hover */
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-box">
+            <div class="form-header">
+                <h2>Forgot Password</h2>
+            </div>
+            <form method="POST" action="{{ url_for('forgot_password') }}">
+                <div class="form-group">
+                    <label for="email">Search by email address</label>
+                    <input type="email" id="email" name="email" placeholder="Email address" required>
+                    <button type="submit" class="search-btn">Search</button>
+                </div>
+            </form>
+            <p class="instruction">
+                Enter your email address above to reset your password.
+                An email with instructions on regaining access will be sent to your email address if we are able to locate you in the database.
+            </p>
+            <p>{{ message }}</p><br>
+            <a href="{{ url_for('sign_in_page') }}" class="login-link">Log in</a>
+
+        </div>
+    </div>
+
+</body>
+</html>

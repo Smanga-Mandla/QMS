@@ -1,0 +1,186 @@
+/* General styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    background-color: #f4f4f4;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed; /* Keeps the navbar fixed at the top */
+    width: 100%; /* Ensures navbar spans the full width */
+    z-index: 1000; /* Keeps the navbar above other content */
+}
+
+.navbar .logo {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .logo img {
+    height: 50px;
+    margin-right: 10px;
+}
+
+.navbar .links {
+    display: flex;
+    align-items: center;
+}
+.navbar .links a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: color 0.3s, text-decoration 0.3s; /* Smooth transition for color and underline */
+}
+
+.navbar .links a:hover {
+    color: #007BFF; /* Change to your preferred color */
+    text-decoration: underline; /* Underline on hover */
+}
+
+
+.navbar .profile {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.navbar .profile .initials {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #0056b3;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.navbar .profile .notifications {
+    position: relative;
+    cursor: pointer;
+}
+
+.navbar .profile .notifications::after {
+    content: '3'; /* Example notification count */
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 5px;
+    font-size: 12px;
+}
+
+.navbar .profile .dropdown, .navbar .profile .notifications-dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.navbar .profile .dropdown a, .navbar .profile .notifications-dropdown div {
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    display: block;
+}
+
+.navbar .profile .dropdown a:hover, .navbar .profile .notifications-dropdown div:hover {
+    background-color: #f4f4f4;
+}
+/* Content styles */
+.content {
+    position: relative; /* Allows for absolute positioning of child elements */
+    padding: 20px;
+}
+
+/* Style for the welcome message */
+.welcome-message {
+    position: absolute;
+    top: 20px; /* Adjust spacing from the top */
+    right: 20px; /* Adjust spacing from the right */
+    font-size: 30px; /* Adjust font size */
+    font-weight: bold;
+    color: #333;
+    text-align: right; /* Aligns the text to the right */
+}
+
+/* Form container styles */
+.form-container {
+    position: relative; /* Allows absolute positioning inside it */
+    max-width: 500px; /* Increased width */
+    width: 100%;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 4px;
+    border: 3px solid rgb(255, 204, 0); /* Add dark orange border */
+}
+
+.form-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* Existing styles for labels */
+.form-container label {
+    margin-bottom: 5px;
+    color: #333;
+    font-weight: normal; /* Unbold the labels */
+    display: block; /* Ensure labels are block elements for consistent spacing */
+}
+
+/* Additional styles for select elements to match input fields */
+.form-container select {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    width: 100%; /* Ensure select element takes full width */
+}
+
+.form-container input {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.form-container button {
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.form-container button:hover {
+    background-color: #0056b3;
+}

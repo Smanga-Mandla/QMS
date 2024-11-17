@@ -1,0 +1,312 @@
+/* General styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #f4f4f4;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .logo {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .logo img {
+    height: 50px;
+    margin-right: 10px;
+}
+
+.navbar .links {
+    margin-left: auto; /* Pushes the links to the right */
+    display: flex;
+    align-items: center;
+}
+
+.navbar .links a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.navbar .profile {
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin-left: 20px; /* Add some space between links and profile */
+}
+
+.navbar .profile .initials {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #007BFF;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.navbar .profile .notifications {
+    position: relative;
+    cursor: pointer;
+    margin-right: 10px; /* Add some space between notifications and initials */
+}
+
+.navbar .profile .notifications .notifications-icon {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .profile .notifications .notifications-icon .icon {
+    font-size: 24px;
+}
+
+.navbar .profile .notifications .notifications-icon .badge {
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    margin-left: -10px;
+    margin-top: -10px;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.navbar .profile .notifications .notifications-dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.navbar .profile .notifications .notifications-dropdown div {
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    display: block;
+}
+
+.navbar .profile .notifications .notifications-dropdown div:hover {
+    background-color: #f4f4f4;
+}
+
+.navbar .profile .notifications:hover .notifications-dropdown {
+    display: block;
+}
+
+.navbar .profile .dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.navbar .profile .dropdown a {
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    display: block;
+}
+
+.navbar .profile .dropdown a:hover {
+    background-color: #f4f4f4;
+}
+
+.navbar .profile:hover .dropdown {
+    display: block;
+}
+
+/* Form Container */
+.form-container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px auto;
+    width: 80%;
+    max-width: 500px;
+}
+
+.form-container h1 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-container label {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.form-container input {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-container .form-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-container .delete-button,
+.form-container .modify-button {
+    padding: 10px 20px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    flex: 1;
+    margin: 0 5px;
+}
+
+.form-container .delete-button {
+    background-color: #d9534f;
+}
+
+.form-container .delete-button:hover {
+    background-color: #c9302c;
+}
+
+.form-container .modify-button {
+    background-color: #5bc0de;
+}
+
+.form-container .modify-button:hover {
+    background-color: #31b0d5;
+}
+
+/* Popup Styles */
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 4px;
+    width: 80%;
+    max-width: 500px;
+    text-align: center;
+    position: relative;
+}
+
+.popup-content .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.popup-content h2 {
+    margin-bottom: 20px;
+}
+
+.popup-content form {
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-content label {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.popup-content input {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.popup-content button {
+    padding: 10px 20px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 0 5px;
+}
+
+.popup-content button:hover {
+    opacity: 0.9;
+}
+
+.popup-content .yes-button,
+.popup-content .no-button,
+.popup-content .submit-button {
+    background-color: #007BFF;
+}
+
+.popup-content .yes-button:hover,
+.popup-content .no-button:hover,
+.popup-content .submit-button:hover {
+    background-color: #0056b3;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .navbar .links {
+        display: none;
+    }
+
+    .navbar .profile .dropdown,
+    .navbar .profile .notifications-dropdown {
+        top: 70px;
+    }
+
+    .form-container {
+        width: 90%;
+    }
+}

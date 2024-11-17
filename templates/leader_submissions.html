@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module Submissions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        /* Page styling */
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+        }
+.navbar .logo {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .logo img {
+    height: 50px;
+    margin-right: 10px;
+}
+
+.navbar .links {
+    display: flex;
+    align-items: center;
+}
+.navbar .links a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: color 0.3s, text-decoration 0.3s; /* Smooth transition for color and underline */
+}
+
+.navbar .links a:hover {
+    color: #007BFF; /* Change to your preferred color */
+    text-decoration: underline; /* Underline on hover */
+}
+
+
+.navbar .profile {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.navbar .profile .initials {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #0056b3;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.navbar .profile .notifications {
+    position: relative;
+    cursor: pointer;
+}
+
+.navbar .profile .notifications::after {
+    content: '3'; /* Example notification count */
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 5px;
+    font-size: 12px;
+}
+
+.navbar .profile .dropdown, .navbar .profile .notifications-dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.navbar .profile .dropdown a, .navbar .profile .notifications-dropdown div {
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    display: block;
+}
+
+.navbar .profile .dropdown a:hover, .navbar .profile .notifications-dropdown div:hover {
+    background-color: #f4f4f4;
+}
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+        .content {
+            max-width: 900px;
+            margin: 6em auto;
+            padding: 1.5em;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 1em;
+            text-align: center;
+        }
+        
+        /* Submissions styling */
+        .submissions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5em;
+        }
+        .submission-item {
+            padding: 1em;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .submission-item p {
+            margin: 0.5em 0;
+            line-height: 1.6;
+        }
+        .submission-item p strong {
+            color: #666;
+        }
+
+        /* File download link styling */
+        .file-download {
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+            font-weight: bold;
+        }
+        .file-download a {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .file-download a:hover {
+            color: #0056b3;
+        }
+        .file-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Back link styling */
+        .back-link {
+            display: inline-block;
+            margin-top: 1.5em;
+            padding: 0.5em 1em;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .back-link:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+
+        .file-download {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+.file-textfield {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    background-color: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    resize: none;
+    word-wrap: break-word;
+    overflow: hidden;
+}
+
+.file-textfield a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.file-textfield a:hover {
+    color: #0056b3;
+}
+
+.file-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+
+ /* Document text field styling */
+ .document-field {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            padding: 8px 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            font-size: 14px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        .document-field img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .document-field a {
+            color:  red;
+            text-decoration: none;
+            font-weight: bold;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            display: inline-block;
+            max-width: 300px;
+        }
+        
+        .document-field a:hover {
+            text-decoration: underline;
+        }
+
+
+
+
+
+
+
+
+
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/ump-logo2.png') }}" alt="Logo">
+        </div>
+        <div class="links">
+            <a href="{{ url_for('program_leader_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('my_courses_leader') }}">My Courses</a>
+            <div class="profile">
+                <div class="initials" onclick="toggleDropdown('profile-dropdown')">{{ initials }}</div>
+                <div class="notifications" onclick="toggleDropdown('notifications-dropdown')">&#128276;</div>
+    
+                <div class="dropdown" id="profile-dropdown" style="display: none;">
+                    <a href="{{ url_for('profile_lecture') }}">User Profile</a>
+                    <a href="#settings">Settings</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                   
+                </div>
+    
+                
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+<div class="content">
+    <h1> {{ module_code }}: {{ module_name }}</h1>
+    <header>
+        <h2>QMS <span id="currentYear"></span></h2>
+    </header>
+
+    {% if submissions %}
+        <div class="submissions-list">
+            {% for submission in submissions %}
+                <div class="submission-item">
+                    <h3> {{ submission.event_title }}</h3>
+                    <p><strong>Submitted by:</strong> {{ submission.submitted_by_email }}</p>
+                   
+                    
+                    <!-- File Download Link -->
+                    <div class="document-field">
+                         
+                            <img src="{{ url_for('static', filename='images/sub_icon.jpg') }}" alt="File Icon" class="file-icon">
+                            <a href="{{ submission.file_url }}" target="_blank">Download Submission</a>
+                         
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No submissions have been made for this module yet.</p>
+    {% endif %}
+
+    <!-- Back to Module Page Link -->
+    
+</div>
+<script>
+
+document.getElementById('currentYear').innerText = new Date().getFullYear();
+</script>
+</body>
+</html>

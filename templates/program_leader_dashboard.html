@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+  <link rel="icon" href="{{ url_for('static', filename='images/head13.jpeg') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_leaders.css') }}">
+ 
+
+
+
+
+<style> 
+
+    #session-warning-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 50%;
+    top: 20%;
+    transform: translate(-50%, -50%);
+    background-color: #007BFF;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+#session-warning-modal h3 {
+    margin-top: 0;
+}
+
+#session-warning-modal button {
+    margin-right: 10px;
+}
+
+.contentt {
+            background-color:  hsla(224, 90%, 51%, 0.151); /* Light background color for panel */
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 1000px;
+    top: 80px;
+    
+        }
+        /* Position the toggle button */
+.toggle-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: orange;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* Style for hiding the panel */
+.hidden-panel {
+    display: none;
+}
+.event-header {
+    display: flex;                /* Use flexbox for horizontal alignment */
+    align-items: center;          /* Vertically center the items */
+    justify-content: flex-start;  /* Align the items to the left */
+    font-size: 19px;
+    
+    color: rgba(0, 0, 0, 0.716);
+    text-decoration: none;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+    text-align: left;
+}
+
+.event-icon {
+    width: 40px;                  /* Icon width */
+    height: 40px;                 /* Icon height */
+    margin-right: 10px;           /* Space between the icon and title */
+    object-fit: contain;          /* Ensure the icon maintains its aspect ratio */
+}
+
+.event-header a {
+   
+    color: rgba(0, 0, 0, 0.801);
+    text-decoration: none;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+    text-align: left;              /* Ensure the text aligns left */
+    display: inline-block;         /* Ensures the link behaves as a block-level element */
+    margin-left: 0;                /* Remove any default left margin (if any) */
+}
+
+.event-header a:hover {
+    color: red;
+    text-decoration: underline;
+}
+
+.event-card {
+    background-color: #fff;
+    border: 1px solid red;
+    border-radius: 6px;
+    padding: 5px;
+    margin-bottom: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.event-cardd {
+    background-color: #fff;
+    border: 1px solid white;
+    border-radius: 6px;
+    padding: 5px;
+    margin-bottom: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+/* Style for the Download File link */
+.download-link {
+    font-size: 16px;
+    font-weight: bold;
+    color: black; /* Blue color */
+    text-decoration: none; /* Remove underline */
+    padding: 8px 16px; /* Add some padding */
+    border: 2px solid red; /* Border around the link */
+    border-radius: 4px; /* Rounded corners */
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    display: inline-block; /* Make the link behave like a block */
+}
+
+.download-link:hover {
+    background-color:  orange; /* Blue background on hover */
+    color: #fff; /* White text on hover */
+    border-color: orange; /* Darker border on hover */
+}
+
+.download-link:active {
+    background-color: #0056b3; /* Darker background when clicked */
+    border-color: #004085; /* Darker border when clicked */
+}
+
+.timeline {
+    max-height: 230px; /* Set the max height to show two events */
+    overflow-y: auto;  /* Enables vertical scroll */
+    padding-right: 10px; /* Adds padding for scrollbar spacing */
+}
+
+
+
+
+/* Styling for each event card */
+.event-cardd {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.event-cardd:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Event header styling */
+.event-headerr {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+   
+    color: #333;
+}
+
+/* Event title link styling */
+.event-title {
+    color: #007BFF;
+    text-decoration: none;
+  
+}
+
+.event-title:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+
+
+.header {
+            text-align: center;
+        }
+
+        .month {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .arrow {
+            cursor: pointer;
+            font-size: 1.5em;
+            color: #007bff;
+        }
+
+        .weekday, .days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        .weekday div, .days div {
+            padding: 10px;
+            border: 1px solid white;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        .days div {
+            border: 1px solid #ddd;
+            min-height: 100px;
+            position: relative;
+            padding: 5px;
+            background-color: #fff;
+        }
+
+        .days div ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 5px 0;
+        }
+
+        .days div ul li {
+            font-size: 0.9em;
+            color: green; /* Submissions */
+            word-wrap: break-word;
+        }
+
+        .current-day {
+            background-color: #ffefc5;
+            border: 2px solid #ffc107;
+            font-weight: bold;
+        }
+ 
+
+    </style>
+  
+
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/ump-logo2.png') }}" alt="Logo">
+        </div>
+        <div class="links">
+            
+            <a href="{{ url_for('program_leader_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('my_courses_leader') }}">My Courses</a>
+            
+            <div class="profile">
+                  <div class="initials" onclick="toggleDropdown('profile-dropdown')">{{ initials }}</div>
+                <div class="notifications" onclick="toggleDropdown('notifications-dropdown')">&#128276;</div>
+              <div class="dropdown" id="profile-dropdown">
+    <a href="{{ url_for('profile_leaders') }}">User-profile</a>
+    <a href="#settings">Settings</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</div>
+
+                <div class="notifications-dropdown" id="notifications-dropdown">
+                    <div>You have a new message</div>
+                    <div>Assignment due tomorrow</div>
+                    <div>Meeting at 3 PM</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+ <div class="content">
+        <div class="top-row">
+            <h2></h2><div class="welcome-message">Hi {{ session['name'] }}  ! &#128075;</div></h2>
+            
+        </div>
+
+<div id="session-warning-modal" style="display:none; position:fixed; top:20%; left:50%; transform:translate(-50%, -50%); z-index:999; background: #007BFF; padding:20px; border:1px solid #000;">
+    <h2>Your session is about to expire!</h2>
+    <p>Do you want to extend your session?</p>
+    <button onclick="extendSession()">Extend Session</button>
+    <button onclick="logout()">Log Out</button>
+</div>
+
+<div class="contentt">
+    <h2>Dashboard</h2>
+         <div class="container">
+<div class="timeline-panel">
+    <div class="timeline-header">
+        <h2>Submissions</h2>
+        <form class="search-form">
+            <input type="text" placeholder="Search Submission..." id="search-field">
+            <button type="button" onclick="searchSubmission()">Search</button>
+        </form>
+    </div>
+    
+    <div class="timeline">
+        {% for submission in submissions %}
+            <div class="timeline-item">
+                <div class="event-cardd">
+                    <div class="event-header">
+                        <img src="{{ url_for('static', filename='images/th.jfif') }}" alt="Event Icon" class="event-icon">
+                        <a href="{{ url_for('event_details', event_id=submission.event_id) }}" class="event-title">
+                            {{ submission.event_title }}
+                        </a>
+                    </div>
+                  
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+</div> 
+</div>
+
+
+<div class="upcoming-events-panel">
+    <button id="togglePanelBtn" class="toggle-btn">▼</button>
+
+    <h2>Upcoming Events</h2>
+
+    <!-- Loop through the submissions and create an event card for each -->
+    {% for submission in submissions %}
+        <div class="event-card">
+            <div class="event-header">
+                <a href="{{ url_for('event_details', event_id=submission.event_id) }}" class="event-title">
+                    {{ submission.event_title }}
+                </a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+    <div class="my-courses-panel">
+    <h2>My Courses</h2>
+    <div class="modules-container">
+        {% for module in modules %}
+        <div class="module-item">
+
+            <img src="{{ url_for('static', filename='images/course.png') }}" alt="Course Icon" class="course-icon">
+            <a href="{{ url_for('view_module', module_id=module.id) }}">{{ module.module_code }}: {{ module.module_name }} </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+ 
+ 
+    <div class="container calendar">
+        <div class="header">
+            <h1>Submission Calendar</h1>
+            <div class="month">
+                <span class="arrow" id="prev">←</span>
+                <span class="date" id="date">July 2024</span>
+                <span class="arrow" id="next">→</span>
+            </div>
+        </div>
+        <div class="weekday">
+            <div>Sun</div>
+            <div>Mon</div>
+            <div>Tue</div>
+            <div>Wed</div>
+            <div>Thu</div>
+            <div>Fri</div>
+            <div>Sat</div>
+        </div>
+        <div class="days" id="days"></div>
+    </div>
+
+    <script>
+        const daysContainer = document.getElementById('days');
+        const monthYearLabel = document.getElementById('month-year');
+        const prevButton = document.getElementById('prev-month');
+        const nextButton = document.getElementById('next-month');
+    
+        let currentDate = new Date();
+    
+        function fetchSubmissions(year, month) {
+            // Fetch submissions from the server using an API endpoint
+            fetch(`/api/submissions?year=${year}&month=${month + 1}`)
+                .then(response => response.json())
+                .then(data => renderCalendar(year, month, data))
+                .catch(error => console.error('Error fetching submissions:', error));
+        }
+    
+        function renderCalendar(year, month, submissions) {
+    daysContainer.innerHTML = '';
+    monthYearLabel.textContent = new Date(year, month).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const lastDate = new Date(year, month + 1, 0).getDate();
+
+    // Get today's date
+    const today = new Date();
+    const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+
+    // Fill in the empty cells before the first day
+    for (let i = 0; i < firstDay; i++) {
+        const emptyCell = document.createElement('div');
+        daysContainer.appendChild(emptyCell);
+    }
+
+    // Fill in the days of the month
+    for (let day = 1; day <= lastDate; day++) {
+        const dayCell = document.createElement('div');
+        dayCell.textContent = day;
+
+        // Highlight current day
+        if (isCurrentMonth && day === today.getDate()) {
+            dayCell.classList.add('current-day');
+        }
+
+        const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        if (submissions[dateKey]) {
+            const submissionList = document.createElement('ul');
+            submissionList.classList.add('submission-list');
+            submissions[dateKey].forEach(submission => {
+                const listItem = document.createElement('li');
+
+                // Create a clickable link for the submission file
+                const link = document.createElement('a');
+                link.href = submission.file_url;
+                link.target = '_blank';
+                link.textContent = `${submission.event_title} (${submission.submitted_by})`;
+                link.classList.add('submission-title'); // Add a class for styling
+
+                listItem.appendChild(link);
+                submissionList.appendChild(listItem);
+            });
+            dayCell.appendChild(submissionList);
+        }
+
+        daysContainer.appendChild(dayCell);
+    }
+}
+    
+        prevButton.addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            fetchSubmissions(currentDate.getFullYear(), currentDate.getMonth());
+        });
+    
+        nextButton.addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            fetchSubmissions(currentDate.getFullYear(), currentDate.getMonth());
+        });
+    
+        // Initialize calendar with current month and year
+        fetchSubmissions(currentDate.getFullYear(), currentDate.getMonth());
+    </script>
+    
+
+
+    <script src="{{ url_for('static', filename='js/dashboard_leaders.js') }}"></script>
+
+
+
+
+
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const panel = document.querySelector(".upcoming-events-panel");
+            const toggleBtn = document.getElementById("togglePanelBtn");
+        
+            function togglePanel() {
+                if (window.innerWidth < 1300) {
+                    panel.classList.add("hidden-panel");
+                    toggleBtn.textContent = "►"; // Arrow right
+                } else {
+                    panel.classList.remove("hidden-panel");
+                    toggleBtn.textContent = "▼"; // Arrow down
+                }
+            }
+        
+            // Initial check
+            togglePanel();
+        
+            // Listen for screen resize
+            window.addEventListener("resize", togglePanel);
+        
+            // Manual toggle when clicking the button
+            toggleBtn.addEventListener("click", function() {
+                panel.classList.toggle("hidden-panel");
+                toggleBtn.textContent = panel.classList.contains("hidden-panel") ? "►" : "▼";
+            });
+        });
+        </script>
+        
+
+
+
+
+
+<script>
+
+
+ 
+
+
+
+
+    let sessionTimeout = 10* 60 * 1000;  // 30 minutes in milliseconds
+    let warningTimeout = 9* 60 * 1000;  // Warning at 25 minutes
+    let sessionWarning;
+
+    // Start the session timer when the page loads
+    window.onload = function() {
+        sessionWarning = setTimeout(showSessionWarning, warningTimeout);
+    };
+
+    // Function to show the session expiration warning modal
+    function showSessionWarning() {
+        let extendModal = document.getElementById('session-warning-modal');
+        extendModal.style.display = 'block';
+    }
+
+    // Function to extend the session by making an AJAX call to the server
+    function extendSession() {
+        fetch('/extend_session', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'extended') {
+
+                    // Reset the session timer
+                    clearTimeout(sessionWarning);
+                    sessionWarning = setTimeout(showSessionWarning, warningTimeout);
+                    closeModal();
+                } else {
+                    alert("Your session has expired, please log in again.");
+                    window.location.href = '/sign_in_page';
+                }
+            });
+    }
+
+    // Function to log out
+    function logout() {
+        window.location.href = '/logout';
+    }
+
+    // Function to close the warning modal
+    function closeModal() {
+        let extendModal = document.getElementById('session-warning-modal');
+        extendModal.style.display = 'none';
+    }
+</script>
+</body>
+</html>

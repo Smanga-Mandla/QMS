@@ -1,0 +1,179 @@
+/* General styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevents the whole page from scrolling */
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #f4f4f4;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .logo {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .logo img {
+    height: 50px;
+    margin-right: 10px;
+}
+
+.navbar .links {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .links a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.navbar .profile {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.navbar .profile .initials {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #0056b3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.navbar .profile .notifications {
+    position: relative;
+    cursor: pointer;
+}
+
+.navbar .profile .notifications::after {
+    content: '3'; /* Example notification count */
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 5px;
+    font-size: 12px;
+}
+
+.navbar .profile .dropdown, .navbar .profile .notifications-dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.navbar .profile .dropdown a, .navbar .profile .notifications-dropdown div {
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    display: block;
+}
+
+.navbar .profile .dropdown a:hover, .navbar .profile .notifications-dropdown div:hover {
+    background-color: #f4f4f4;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.modules-panel {
+    width: 100%;
+    max-width: 1000px;
+    background-color: #00000000;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 40px;
+    text-align: -webkit-left;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.modules-panel h1 {
+    color: navy;
+    margin-bottom: 20px;
+}
+
+/* Display modules in a grid */
+.modules-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Create a responsive grid with columns of 200px width */
+    gap: 20px; /* Space between modules */
+    justify-content: start; /* Align items to the start of the container */
+}
+
+/* Each module is styled as a square */
+.module-item {
+    width: 200px; /* Width of the square */
+    height: 200px; /* Height of the square */
+    background-color: rgba(0, 123, 255, 0.7);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.3s; /* Smooth transition for hover effect */
+}
+
+/* Add a hover effect */
+.module-item:hover {
+    background-color: #555; /* Darker background on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+.module-link {
+    text-decoration: none;
+    color: white; /* Ensures text color is white on hover */
+}
+
+.navbar .links a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: color 0.3s, text-decoration 0.3s; /* Smooth transition for color and underline */
+}
+
+.navbar .links a:hover {
+    color: #007BFF; /* Change to your preferred color */
+    text-decoration: underline; /* Underline on hover */
+}
+
+
+.module-name {
+    padding: 10px; /* Adds padding around the module name */
+}

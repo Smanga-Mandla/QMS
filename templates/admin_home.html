@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #444;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: #fff;
+        }
+        thead {
+            background-color: #f1f1f1;
+        }
+        th, td {
+            text-align: left;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #e9ecef;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .action-btn {
+            display: inline-block;
+            padding: 5px 10px;
+            color: #fff;
+            background-color: rgb(255, 166, 0);
+            border-radius: 4px;
+            text-align: center;
+        }
+        .action-btnn {
+            display: inline-block;
+            padding: 5px 10px;
+            color: #fff;
+            background-color: red;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .action-btn:hover {
+            background-color: #0056b3;
+        }
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+        }
+.navbar .logo {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .logo img {
+    height: 50px;
+    margin-right: 10px;
+}
+
+.navbar .links {
+    display: flex;
+    align-items: center;
+}
+.navbar .links a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: color 0.3s, text-decoration 0.3s; /* Smooth transition for color and underline */
+}
+
+.navbar .links a:hover {
+    color: #007BFF; /* Change to your preferred color */
+    text-decoration: underline; /* Underline on hover */
+}
+
+
+.navbar .profile {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.navbar .profile .initials {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #0056b3;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.navbar .profile .notifications {
+    position: relative;
+    cursor: pointer;
+}
+
+.navbar .profile .notifications::after {
+    content: '3'; /* Example notification count */
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 5px;
+    font-size: 12px;
+}
+
+.navbar .profile .dropdown, .navbar .profile .notifications-dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.navbar .profile .dropdown a, .navbar .profile .notifications-dropdown div {
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    display: block;
+}
+
+.navbar .profile .dropdown a:hover, .navbar .profile .notifications-dropdown div:hover {
+    background-color: #f4f4f4;
+}
+.panel {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 100px; /* Space between panels */
+            width: 120%; /* Take full width of the container */
+            max-width: 1200px; /* Set a maximum width for the panel */
+        }
+    </style>
+</head>
+<body>
+    
+    
+    
+    <div class="navbar">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/ump-logo2.png') }}" alt="Logo">
+        </div>
+        <div class="links">
+           
+            <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('admin_home') }}">User Task</a>
+            <a href="{{ url_for('account') }}">Account Management</a>
+        
+            <a href="{{ url_for('manage_user') }}">Manage User</a> <!-- Added link -->
+            <div class="profile">
+                <div class="initials" onclick="toggleDropdown('profile-dropdown')">{{ user_initials }}</div>
+                <div class="notifications" onclick="toggleDropdown('notifications-dropdown')">&#128276;</div>
+              <div class="dropdown" id="profile-dropdown">
+    <a href="{{ url_for('profile_lecture') }}">User-profile</a>
+    <a href="#settings">Settings</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</div>
+
+                <div class="notifications-dropdown" id="notifications-dropdown">
+                    <div>You have a new message</div>
+                    <div>Assignment due tomorrow</div>
+                    <div>Meeting at 3 PM</div>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+
+    <div class="panel">
+   
+
+    <h2>Manage Events and Submissions</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Program Leader</th>
+                <th>Program Leader Qualification</th>
+                <th>Lecturer</th>
+                <th>Lecturer Qualification</th>
+                <th>Module Name</th>
+                <th>Module Code</th>
+                <th>Add Event</th>
+                <th>View Submissions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for module in modules %}
+            <tr>
+                <td>
+                    {% for leader in module.program_leaders %}
+                        {{ leader.name }} {{ leader.surname }}<br>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for leader in module.program_leaders %}
+                        {{ leader.qualification }}<br>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for lecturer in module.lecturers %}
+                        {{ lecturer.name }} {{ lecturer.surname }}<br>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for lecturer in module.lecturers %}
+                        {{ lecturer.qualification }}<br>
+                    {% endfor %}
+                </td>
+                <td>{{ module.module_name }}</td>
+                <td>{{ module.module_code }}</td>
+                <td>
+                    <a href="{{ url_for('add_slot', module_id=module.id) }}" class="action-btnn">Add Event</a>
+                </td>
+                <td>
+                    <a href="{{ url_for('view_sub', module_id=module.id) }}" class="action-btn">
+                        View Submissions
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+        </div>
+    </div>
+</body>
+</html>

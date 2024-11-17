@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Events</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: whitesmoke;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+        }
+.navbar .logo {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .logo img {
+    height: 50px;
+    margin-right: 10px;
+}
+
+.navbar .links {
+    display: flex;
+    align-items: center;
+}
+.navbar .links a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: color 0.3s, text-decoration 0.3s; /* Smooth transition for color and underline */
+}
+
+.navbar .links a:hover {
+    color: #007BFF; /* Change to your preferred color */
+    text-decoration: underline; /* Underline on hover */
+}
+
+
+.navbar .profile {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.navbar .profile .initials {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color:#0056b3;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.navbar .profile .notifications {
+    position: relative;
+    cursor: pointer;
+}
+
+.navbar .profile .notifications::after {
+    content: '3'; /* Example notification count */
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 5px;
+    font-size: 12px;
+}
+
+.navbar .profile .dropdown, .navbar .profile .notifications-dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.navbar .profile .dropdown a, .navbar .profile .notifications-dropdown div {
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    display: block;
+}
+
+.navbar .profile .dropdown a:hover, .navbar .profile .notifications-dropdown div:hover {
+    background-color: #f4f4f4;
+}
+ 
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+
+    
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .event-panel {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 15px 20px; /* Reduced padding */
+            margin: 10px 0;
+            width: 110%;
+            max-width: 800px;
+            transition: all 0.3s ease;
+        }
+
+        .event-panel:hover {
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ecf0f1; /* Lighter border */
+            padding-bottom: 10px; /* Reduced padding */
+            margin-bottom: 10px; /* Reduced margin */
+        }
+
+        .event-header h2 {
+            font-size: 1.5rem; /* Smaller font size */
+            color: #000000ac;
+            margin: 0;
+        }
+
+        .event-header h3 {
+            font-size: 1rem; /* Smaller font size */
+            color: #7f8c8d;
+            margin: 0;
+        }
+
+        .event-details {
+            font-size: 1rem; /* Slightly smaller font size */
+            line-height: 1.4;
+        }
+
+        .event-details strong {
+            color: #2980b9;
+        }
+
+        .event-file-link {
+            display: block;
+            margin-top: 8px; /* Reduced margin */
+            color: white;
+            text-decoration: none;
+            background-color: #0056b3;
+            width: 100px;
+        }
+
+        .event-file-link:hover {
+            color: red;
+            text-decoration: underline;
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, RED, RED); /* Red gradient */
+            color: white;
+            padding: 8px 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: linear-gradient(135deg, #c0392b, #e74c3c); /* Darker red gradient on hover */
+            transform: scale(1.05); /* Slightly enlarge button */
+        }
+
+        .delete-btn:active {
+            background: linear-gradient(135deg, #c0392b, #7f1d1d); /* Even darker red when clicked */
+            transform: translateY(2px); /* Button presses down when clicked */
+        }
+
+        hr {
+            border: 1px solid #ecf0f1;
+            margin: 10px 0;
+        }
+   
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/ump-logo2.png') }}" alt="Logo">
+        </div>
+        <div class="links">
+            <a href="{{ url_for('program_leader_dashboard') }}">Dashboard</a>
+           
+            <a href="{{ url_for('my_courses_leader') }}">My Courses</a>
+
+            <div class="profile">
+                <div class="initials" onclick="toggleDropdown('profile-dropdown')">{{ initials }}</div>
+                <div class="notifications" onclick="toggleDropdown('notifications-dropdown')">&#128276;</div>
+
+                <div class="dropdown" id="profile-dropdown" style="display: none;">
+                    <a href="{{ url_for('profile_lecture') }}">User Profile</a>
+                    <a href="#settings">Settings</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                   
+                </div>
+
+                
+            </div>
+        </div>
+    </div>
+    <div>
+     
+{% for event in events %}
+    <div class="event-panel">
+        <div class="event-header">
+            <h2>{{ event.module_code }}: {{ event.module_name }}</h2>
+            <h3>{{ event.title }}</h3>
+        </div>
+        <div class="event-details">
+            <p><strong>Description:</strong> {{ event.description }}</p>
+            <p><strong>Closing Date:</strong> {{ event.closing_date }}</p>
+             
+        </div>
+        <form method="POST" action="{{ url_for('delete_event', event_id=event.id) }}">
+            <button type="submit" class="delete-btn">Delete Event</button>
+        </form>
+    </div>
+    <hr>
+{% endfor %}
+
+</body>
+</html>

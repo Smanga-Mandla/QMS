@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program_leader_view_module</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/head13.jpeg') }}" type="image/x-icon">
+    <!-- External CSS (if any) -->
+ 
+    <style>
+        /* General Layout */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            padding-top: 70px; /* Ensure content starts below the fixed navbar */
+        }
+        
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+        }
+.navbar .logo {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .logo img {
+    height: 50px;
+    margin-right: 10px;
+}
+
+.navbar .links {
+    display: flex;
+    align-items: center;
+}
+.navbar .links a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: color 0.3s, text-decoration 0.3s; /* Smooth transition for color and underline */
+}
+
+.navbar .links a:hover {
+    color: #007BFF; /* Change to your preferred color */
+    text-decoration: underline; /* Underline on hover */
+}
+
+
+.navbar .profile {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.navbar .profile .initials {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #0056b3;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.navbar .profile .notifications {
+    position: relative;
+    cursor: pointer;
+}
+
+.navbar .profile .notifications::after {
+    content: '3'; /* Example notification count */
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 5px;
+    font-size: 12px;
+}
+
+.navbar .profile .dropdown, .navbar .profile .notifications-dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.navbar .profile .dropdown a, .navbar .profile .notifications-dropdown div {
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    display: block;
+}
+
+.navbar .profile .dropdown a:hover, .navbar .profile .notifications-dropdown div:hover {
+    background-color: #f4f4f4;
+}
+.form-container {
+            max-width: 700px;
+            margin: auto;
+            padding: 40px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            
+            
+        }
+
+        h1 {
+            text-align: center;
+            color: black;
+        }
+
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+  /* Label styling */
+  label {
+        font-size: 1rem;
+         
+        color: #333;
+        margin-top: 10px;
+        display: block;
+    }
+
+    /* Input styling */
+    input[type="text"],
+    input[type="file"],
+    input[type="date"],
+    textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1rem;
+        background-color: #fff;
+    }
+
+    /* Calendar input styling */
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        color: #333;
+        cursor: pointer;
+    }
+
+
+        button {
+            background-color: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            max-width: 100px;
+        }
+
+        
+        .file-name {
+            margin-top: -10px;
+            margin-bottom: 15px;
+            font-size: 20px;
+            color: red;
+        }
+        header {
+            background-color: var(--primary-color);
+            color: black;
+            padding: 15px; /* Added top padding to account for fixed navbar */
+            text-align: center;
+            
+            
+          
+        }
+        .panel {
+    background-color: white; /* Light background color for panel */
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 1000px;
+}
+   /* Event List Styling */
+   .content {
+            background-color: hsla(224, 90%, 51%, 0.151); /* Light background color for panel */
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 1000px;
+        }
+
+
+        .add-event-btn {
+    background: linear-gradient(135deg, #4CAF50,#0056b3); /* Gradient from green shades */
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Shadow for a slight 3D effect */
+    transition: all 0.3s ease;
+}
+
+.add-event-btn:hover {
+    background: linear-gradient(135deg, #66BB6A, #388E3C); /* Lighter green on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3); /* Deeper shadow */
+    transform: translateY(-2px); /* Slightly lift button */
+}
+
+.add-event-btn:active {
+    background: linear-gradient(135deg, #388E3C, #1B5E20); /* Darker green on click */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Reduced shadow */
+    transform: translateY(0); /* Reset lift */
+}
+
+
+.view-event-btn {
+    background: linear-gradient(135deg, #af984c,  red); /* Gradient from green shades */
+    color: white;
+    padding: 15px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Shadow for a slight 3D effect */
+    transition: all 0.3s ease;
+    height: 60px;
+    width: 300PX;
+}
+
+.view-event-btn:hover {
+    background: linear-gradient(135deg, #66BB6A, #388E3C); /* Lighter green on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3); /* Deeper shadow */
+    transform: translateY(-2px); /* Slightly lift button */
+}
+ 
+.view-event-btn:active {
+    background: linear-gradient(135deg, #388E3C, #1B5E20); /* Darker green on click */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Reduced shadow */
+    transform: translateY(0); /* Reset lift */
+}
+
+/* Style for the container div */
+  
+
+/* Style for the view-event-btn link */
+.view-event-btnn {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: rgba(255, 0, 0, 0.836); /* Green background */
+    color: #fff; /* White text */
+    font-size: 1.1rem; /* Slightly larger text */
+    font-weight: 600; /* Bold text */
+    border-radius: 5px; /* Rounded corners */
+    text-decoration: none; /* Remove underline */
+    text-align: center; /* Center the text inside */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition */
+    cursor: pointer; /* Pointer cursor to indicate it's clickable */
+}
+
+/* Hover effect for the view-event-btn link */
+.view-event-btnn:hover {
+    text-decoration: underline; 
+ 
+
+}
+
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/ump-logo2.png') }}" alt="Logo">
+        </div>
+        <div class="links">
+            <a href="{{ url_for('program_leader_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('my_courses_leader') }}">My Courses</a>
+
+            <div class="profile">
+                <div class="initials" onclick="toggleDropdown('profile-dropdown')">{{ initials }}</div>
+                <div class="notifications" onclick="toggleDropdown('notifications-dropdown')">&#128276;</div>
+
+                <div class="dropdown" id="profile-dropdown" style="display: none;">
+                    <a href="{{ url_for('profile_lecture') }}">User Profile</a>
+                    <a href="#settings">Settings</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                   
+                </div>
+
+                
+            </div>
+        </div>
+    </div>
+     <header>
+        <a href="{{ url_for('view_submissions', module_id=module_id) }}" class="view-event-btnn">View All Submissions for this Module</a>
+     </header>
+    </div>
+        <div class="content">
+     
+    <h2>{{ module.module_code }}: {{ module.module_name }}</h2>
+    <div class="form-container">
+      
+    <center><h2>Add Event</h2></center>
+ 
+    <form action="/add_event" method="POST" enctype="multipart/form-data">
+        <label for="title">Event Title:</label>
+        <input type="text" name="title" required>
+    
+        <label for="description">Description:</label>
+        <textarea name="description" required></textarea>
+    
+        <label for="closing_date">Closing Date:</label>
+        <input type="date" name="closing_date" required>
+     
+        <input type="hidden" name="module_id" value="{{ module_id }}">
+    
+        <button type="submit" class="add-event-btn">Add Event</button>
+    </form>
+</div> 
+ 
+
+<div class="event-panel">
+    
+    <h3>Click the button to view your event details:  {% set view_event_url = url_for('view_event') %}
+        <button onclick="window.location.href='{{ view_event_url }}'" class="view-event-btn">View Event</button>
+    </h3>
+   
+</div>
+
+</div>
+ 
+<script>
+    function updateFileName() {
+        const fileInput = document.getElementById('file');
+        const fileNameDisplay = document.getElementById('file-name-display');
+        const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : '';
+        fileNameDisplay.textContent = fileName ? `Selected file: ${fileName}` : '';
+    }
+
+    document.getElementById('currentYear').innerText = new Date().getFullYear();
+        
+        // If you're using Firebase to load events, uncomment the next block.
+        /*
+        const db = firebase.firestore();
+
+        function loadEvents() {
+            db.collection('events').where("year", "==", new Date().getFullYear())
+            .get().then(snapshot => {
+                snapshot.forEach(doc => {
+                    const event = doc.data();
+                    const li = document.createElement('li');
+                    li.className = 'event-panel';
+                    li.innerHTML = `<h3>${event.title}</h3><p>${event.description}</p><a href="${event.file_url}" target="_blank" class="download-button">Download Document</a>`;
+                    document.getElementById('eventList').appendChild(li);
+                });
+            });
+        }
+
+        loadEvents();
+        */
+
+</script>
+
+<script>
+    let sessionTimeout = 10* 60 * 1000;  // 30 minutes in milliseconds
+    let warningTimeout = 9* 60 * 1000;  // Warning at 25 minutes
+    let sessionWarning;
+
+    // Start the session timer when the page loads
+    window.onload = function() {
+        sessionWarning = setTimeout(showSessionWarning, warningTimeout);
+    };
+
+    // Function to show the session expiration warning modal
+    function showSessionWarning() {
+        let extendModal = document.getElementById('session-warning-modal');
+        extendModal.style.display = 'block';
+    }
+
+    // Function to extend the session by making an AJAX call to the server
+    function extendSession() {
+        fetch('/extend_session', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'extended') {
+
+                    // Reset the session timer
+                    clearTimeout(sessionWarning);
+                    sessionWarning = setTimeout(showSessionWarning, warningTimeout);
+                    closeModal();
+                } else {
+                    alert("Your session has expired, please log in again.");
+                    window.location.href = '/sign_in_page';
+                }
+            });
+    }
+
+    // Function to log out
+    function logout() {
+        window.location.href = '/logout';
+    }
+
+    // Function to close the warning modal
+    function closeModal() {
+        let extendModal = document.getElementById('session-warning-modal');
+        extendModal.style.display = 'none';
+    }
+
+
+    function toggleDropdown(dropdownId) {
+    const dropdown = document.getElementById(dropdownId);
+    if (dropdown.style.display === 'block') {
+        dropdown.style.display = 'none';
+    } else {
+        // Hide all dropdowns first
+        document.querySelectorAll('.dropdown, .notifications-dropdown').forEach(d => d.style.display = 'none');
+        // Show the targeted dropdown
+        dropdown.style.display = 'block';
+    }
+}
+
+</script>
+
+
+<script>
+    function redirectToEvent() {
+        window.location.href = "{{ url_for('view_event') }}";
+    }
+</script>
+ 
+</body>
+</html>

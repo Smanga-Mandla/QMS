@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+      <link rel="icon" href="{{ url_for('static', filename='images/head13.jpeg') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_1.css') }}">
+    <style>
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Page styling */
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 50px auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            color: #333;
+            width: 100%;
+            max-width: 1200px;
+            height: 100vh;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #0056b3;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        /* Admin Dashboard Panel */
+        .panel {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 1000px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        /* Button Styling */
+        .manage-user-btn {
+            background-color: #007bff; /* Blue background */
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            text-decoration: none;
+        }
+
+        .manage-user-btn:hover {
+            background-color: #0056b3; /* Darker blue */
+            transform: scale(1.05); /* Slightly enlarge the button */
+        }
+
+        .manage-user-btn:focus {
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Focus effect */
+        }
+
+        footer {
+            background-color: white;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        footer a {
+            color: #333;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+            color: #007BFF;
+        }
+
+    </style>
+</head>
+<body>
+   
+
+
+    <div class="navbar">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/ump-logo2.png') }}" alt="Logo">
+        </div>
+        <div class="links">
+           
+            <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('admin_home') }}">User Task</a>
+            <a href="{{ url_for('account') }}">Account Management</a>
+        
+            <a href="{{ url_for('manage_user') }}">Manage User</a> <!-- Added link -->
+            <div class="profile">
+                <div class="initials" onclick="toggleDropdown('profile-dropdown')">{{ initials }}</div>
+              <div class="dropdown" id="profile-dropdown">
+    <a href="{{ url_for('profile_lecture') }}">User-profile</a>
+    <a href="#settings">Settings</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</div>
+
+                <div class="notifications-dropdown" id="notifications-dropdown">
+                    <div>You have a new message</div>
+                    <div>Assignment due tomorrow</div>
+                    <div>Meeting at 3 PM</div>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+    <div class="content">
+        <div class="panel">
+            <h1>Welcome to the Admin Dashboard</h1>
+            <p>Welcome to the Qualification Management System. As an administrator, you can manage user accounts, view modules, and more. Use the button below to manage user accounts.</p>
+            <a href="{{ url_for('manage_user') }}" class="manage-user-btn">Manage User</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 University of Mpumalanga. All rights reserved.</p>
+        <div>
+            <a href="#terms">Terms of Service</a> | 
+            <a href="#privacy">Privacy Policy</a> | 
+            <a href="#contact">Contact Us</a>
+        </div>
+    </footer>
+
+    <script>
+        let sessionTimeout = 10* 60 * 1000;  // 30 minutes in milliseconds
+        let warningTimeout = 9* 60 * 1000;  // Warning at 25 minutes
+        let sessionWarning;
+    
+        // Start the session timer when the page loads
+        window.onload = function() {
+            sessionWarning = setTimeout(showSessionWarning, warningTimeout);
+        };
+    
+        // Function to show the session expiration warning modal
+        function showSessionWarning() {
+            let extendModal = document.getElementById('session-warning-modal');
+            extendModal.style.display = 'block';
+        }
+    
+        // Function to extend the session by making an AJAX call to the server
+        function extendSession() {
+            fetch('/extend_session', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'extended') {
+    
+                        // Reset the session timer
+                        clearTimeout(sessionWarning);
+                        sessionWarning = setTimeout(showSessionWarning, warningTimeout);
+                        closeModal();
+                    } else {
+                        alert("Your session has expired, please log in again.");
+                        window.location.href = '/sign_in_page';
+                    }
+                });
+        }
+    
+        // Function to log out
+        function logout() {
+            window.location.href = '/logout';
+        }
+    
+        // Function to close the warning modal
+        function closeModal() {
+            let extendModal = document.getElementById('session-warning-modal');
+            extendModal.style.display = 'none';
+        }
+    
+    
+        function toggleDropdown(dropdownId) {
+        const dropdown = document.getElementById(dropdownId);
+        if (dropdown.style.display === 'block') {
+            dropdown.style.display = 'none';
+        } else {
+            // Hide all dropdowns first
+            document.querySelectorAll('.dropdown, .notifications-dropdown').forEach(d => d.style.display = 'none');
+            // Show the targeted dropdown
+            dropdown.style.display = 'block';
+        }
+    }
+    
+    </script>
+</div>
+</div>
+</body>
+</html>

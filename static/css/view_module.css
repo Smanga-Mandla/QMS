@@ -1,0 +1,245 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: white;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+.navbar .logo {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .logo img {
+    height: 50px;
+    margin-right: 10px;
+}
+
+.navbar .links {
+    display: flex;
+    align-items: center;
+}
+.navbar .links a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: color 0.3s, text-decoration 0.3s; /* Smooth transition for color and underline */
+}
+
+.navbar .links a:hover {
+    color: #007BFF; /* Change to your preferred color */
+    text-decoration: underline; /* Underline on hover */
+}
+
+
+.navbar .profile {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.navbar .profile .initials {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #007BFF;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.navbar .profile .notifications {
+    position: relative;
+    cursor: pointer;
+}
+
+.navbar .profile .notifications::after {
+    content: '3';
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 5px;
+    font-size: 12px;
+    z-index: 1;
+}
+
+.navbar .profile .dropdown, .navbar .profile .notifications-dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.navbar .profile .dropdown a, .navbar .profile .notifications-dropdown div {
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    display: block;
+}
+
+.navbar .profile .dropdown a:hover, .navbar .profile .notifications-dropdown div:hover {
+    background-color: #f4f4f4;
+}
+
+.content {
+    padding: 2rem;
+    padding-top: 120px;
+    padding-bottom: 1px;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    max-width: 800px; /* Increase the max width to accommodate the new panel */
+    margin: 20px auto;
+    padding: 1rem;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.form-container {
+    flex: 3;
+    margin-right: 100px; /* Space between form container and panel */
+}
+
+.form-container h1 {
+    color:   Navy;
+    text-align: left;
+}
+.form-container h2 {
+    color:  darkgray;
+    text-align: Center;
+}
+
+.form-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-container .form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.form-container label {
+    width: 150px; /* Fixed width for labels */
+    font-weight: bold;
+    color: GrayText;
+    margin-right: 1rem; /* Space between label and input */
+    text-align: right;
+}
+
+.form-container input[type="text"],
+.form-container textarea,
+.form-container input[type="file"] {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 70%;
+    box-sizing: border-box;
+    font-size: 15px;
+}
+
+.form-container textarea {
+    resize: vertical;
+}
+
+.form-container input[type="submit"] {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background-color: Red;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100px;
+}
+
+.form-container input[type="submit"]:hover {
+    background-color: #007bff;
+}
+
+.panel {
+    width: 250px; /* Set width for the upcoming events panel */
+    position: fixed; /* Make it fixed */
+    top: 120px; /* Adjust based on your navbar height */
+    right: 20px; /* Space from the right */
+    background-color: white; /* Panel background color */
+    border: 2px solid #ccc; /* Border for the panel */
+    border-radius: 10px; /* Rounded corners */
+    padding: 15px; /* Padding inside the panel */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+    max-height: calc(100vh - 300px); /* Ensure it doesn't overflow the viewport */
+    overflow-y: auto; /* Enable scrolling if content exceeds height */
+    transform: translateY(+20%); /* Adjust position to center vertically */
+    height: 500px;
+}
+.upcoming-events-panel {
+    width: 250px; /* Set width for the upcoming events panel */
+    position: fixed; /* Make it fixed */
+    top: 120px; /* Adjust based on your navbar height */
+    right: 20px; /* Space from the right */
+    background-color: white; /* Panel background color */
+    border: 2px solid #ccc; /* Border for the panel */
+    border-radius: 10px; /* Rounded corners */
+    padding: 15px; /* Padding inside the panel */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+    max-height: calc(100vh - 300px); /* Ensure it doesn't overflow the viewport */
+    overflow-y: auto; /* Enable scrolling if content exceeds height */
+    transform: translateY(+20%); /* Adjust position to center vertically */
+    height: 500px;
+}
+.panel h2 {
+    color:   navy;
+    margin-bottom: 1rem;
+}
+
+.previous-events {
+    display: flex;
+    flex-direction: column;
+}
+
+.event-item {
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    background-color: #f9f9f9;
+}
+
+.event-item h3 {
+    margin-top: 0;
+}
+
+.event-item p {
+    margin: 0.5rem 0;
+}

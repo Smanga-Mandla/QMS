@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="{{ url_for('static', filename='images/head13.jpeg') }}" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Document</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: whitesmoke; 
+        color: #333;
+        padding-top: 70px;
+    }
+    
+    /* Navbar */
+    .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        width: 100%;
+        z-index: 1000;
+        top: 0;
+        left: 0;
+    }
+.navbar .logo {
+display: flex;
+align-items: center;
+}
+
+.navbar .logo img {
+height: 50px;
+margin-right: 10px;
+}
+
+.navbar .links {
+display: flex;
+align-items: center;
+}
+.navbar .links a {
+margin: 0 10px;
+text-decoration: none;
+color: #333;
+font-weight: bold;
+transition: color 0.3s, text-decoration 0.3s; /* Smooth transition for color and underline */
+}
+
+.navbar .links a:hover {
+color: #007BFF; /* Change to your preferred color */
+text-decoration: underline; /* Underline on hover */
+}
+
+
+.navbar .profile {
+display: flex;
+align-items: center;
+position: relative;
+}
+
+.navbar .profile .initials {
+width: 40px;
+height: 40px;
+border-radius: 50%;
+background-color: #0056b3;
+color: white;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 18px;
+font-weight: bold;
+margin-right: 10px;
+cursor: pointer;
+}
+
+.navbar .profile .notifications {
+position: relative;
+cursor: pointer;
+}
+
+.navbar .profile .notifications::after {
+content: '3'; /* Example notification count */
+position: absolute;
+top: -5px;
+right: -5px;
+background-color: red;
+color: white;
+border-radius: 50%;
+padding: 2px 5px;
+font-size: 12px;
+}
+
+.navbar .profile .dropdown, .navbar .profile .notifications-dropdown {
+display: none;
+position: absolute;
+top: 50px;
+right: 0;
+background-color: white;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+border-radius: 4px;
+overflow: hidden;
+z-index: 1000;
+}
+
+.navbar .profile .dropdown a, .navbar .profile .notifications-dropdown div {
+padding: 10px;
+text-decoration: none;
+color: #333;
+display: block;
+}
+
+.navbar .profile .dropdown a:hover, .navbar .profile .notifications-dropdown div:hover {
+background-color: #f4f4f4;
+}
+  
+.submission-form-container {
+    max-width: 500px;
+    margin: 100px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Added styles to center the form vertically */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 500px;  /* Full viewport height */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+/* Title for the submission form */
+.submission-form-container h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Highlight event title */
+.event-title {
+    color: #0056b3; /* Blue color for event title */
+}
+
+/* Form groups */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* Label styling */
+.form-group label {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* File input field */
+.file-input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Button styles */
+.submit-btn {
+    padding: 12px 20px;
+    background-color: #0056b3;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #00449e; /* Darker blue on hover */
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .submission-form-container {
+        padding: 15px;
+    }
+
+    .submit-btn {
+        font-size: 14px;
+    }
+}
+
+/* Footer */
+footer {
+            background-color:white;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        footer a {
+            color: #333;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+            color: #007BFF;
+        }
+        .content {
+            background-color: hsla(224, 90%, 51%, 0.151); /* Light background color for panel */
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 1600px;
+    width:550px;
+    height:520px;
+            
+        }
+
+
+</style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/ump-logo2.png') }}" alt="Logo">
+        </div>
+        <div class="links">
+           
+            <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('admin_home') }}">User Task</a>
+            <a href="{{ url_for('account') }}">Account Management</a>
+        
+            <a href="{{ url_for('manage_user') }}">Manage User</a> <!-- Added link -->
+            <div class="profile">
+                <div class="initials" onclick="toggleDropdown('profile-dropdown')">{{ user_initials }}</div>
+              <div class="dropdown" id="profile-dropdown">
+    <a href="{{ url_for('profile_lecture') }}">User-profile</a>
+    <a href="#settings">Settings</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</div>
+
+                <div class="notifications-dropdown" id="notifications-dropdown">
+                    <div>You have a new message</div>
+                    <div>Assignment due tomorrow</div>
+                    <div>Meeting at 3 PM</div>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+    <div class="content">
+    <div class="submission-form-container">
+        <h3>Submit Document for <span class="event-title">{{ event_title }}</span></h3>
+        <form action="{{ url_for('process_sub', module_id=module_id, event_id=event_id) }}" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="document">Upload Document</label>
+                <input type="file" name="document" required class="file-input">
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="submit-btn">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+ 
+
+</body>
+</html>

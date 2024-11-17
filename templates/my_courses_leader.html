@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Courses</title>
+      <link rel="icon" href="{{ url_for('static', filename='images/head13.jpeg') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/my_courses_leaders.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/ump-logo2.png') }}" alt="Logo">
+        </div>
+        <div class="links">
+           
+            <a href="{{ url_for('program_leader_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('my_courses_leader') }}">My Courses</a>
+            <div class="profile">
+                <div class="initials" onclick="toggleDropdown('profile-dropdown')">{{ initials }}</div>
+                <div class="dropdown" id="profile-dropdown">
+                    <a href="{{ url_for('profile_leaders') }}">User-profile</a>
+                    <a href="#settings">Settings</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                </div>
+                <div class="notifications-dropdown" id="notifications-dropdown">
+                    <div>You have a new message</div>
+                    <div>Assignment due tomorrow</div>
+                    <div>Meeting at 3 PM</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="modules-panel">
+            <h1>My Modules</h1>
+            <div class="modules-container">
+                {% for module in modules %}
+                <div class="module-item">
+                    
+                 <a href="{{ url_for('view_module', module_id=module.id) }}">{{ module.module_code }}: {{ module.module_name }}</a>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/my_courses_leaders.js') }}"></script>
+    
+<script>
+    let sessionTimeout = 10* 60 * 1000;  // 30 minutes in milliseconds
+    let warningTimeout = 9* 60 * 1000;  // Warning at 25 minutes
+    let sessionWarning;
+
+    // Start the session timer when the page loads
+    window.onload = function() {
+        sessionWarning = setTimeout(showSessionWarning, warningTimeout);
+    };
+
+    // Function to show the session expiration warning modal
+    function showSessionWarning() {
+        let extendModal = document.getElementById('session-warning-modal');
+        extendModal.style.display = 'block';
+    }
+
+    // Function to extend the session by making an AJAX call to the server
+    function extendSession() {
+        fetch('/extend_session', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'extended') {
+
+                    // Reset the session timer
+                    clearTimeout(sessionWarning);
+                    sessionWarning = setTimeout(showSessionWarning, warningTimeout);
+                    closeModal();
+                } else {
+                    alert("Your session has expired, please log in again.");
+                    window.location.href = '/sign_in_page';
+                }
+            });
+    }
+
+    // Function to log out
+    function logout() {
+        window.location.href = '/logout';
+    }
+
+    // Function to close the warning modal
+    function closeModal() {
+        let extendModal = document.getElementById('session-warning-modal');
+        extendModal.style.display = 'none';
+    }
+
+
+    function toggleDropdown(dropdownId) {
+    const dropdown = document.getElementById(dropdownId);
+    if (dropdown.style.display === 'block') {
+        dropdown.style.display = 'none';
+    } else {
+        // Hide all dropdowns first
+        document.querySelectorAll('.dropdown, .notifications-dropdown').forEach(d => d.style.display = 'none');
+        // Show the targeted dropdown
+        dropdown.style.display = 'block';
+    }
+}
+
+</script>
+</body>
+</html>

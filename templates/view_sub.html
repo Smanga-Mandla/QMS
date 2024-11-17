@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Submissions</title>
+</head>
+<style>
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+    
+.navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+        }
+.navbar .logo {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .logo img {
+    height: 50px;
+    margin-right: 10px;
+}
+
+.navbar .links {
+    display: flex;
+    align-items: center;
+}
+.navbar .links a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: color 0.3s, text-decoration 0.3s; /* Smooth transition for color and underline */
+}
+
+.navbar .links a:hover {
+    color: #007BFF; /* Change to your preferred color */
+    text-decoration: underline; /* Underline on hover */
+}
+
+
+.navbar .profile {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.navbar .profile .initials {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #0056b3;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.navbar .profile .notifications {
+    position: relative;
+    cursor: pointer;
+}
+
+.navbar .profile .notifications::after {
+    content: '3'; /* Example notification count */
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 5px;
+    font-size: 12px;
+}
+
+.navbar .profile .dropdown, .navbar .profile .notifications-dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.navbar .profile .dropdown a, .navbar .profile .notifications-dropdown div {
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    display: block;
+}
+
+.navbar .profile .dropdown a:hover, .navbar .profile .notifications-dropdown div:hover {
+    background-color: #f4f4f4;
+}
+/* General Styling */
+html, body {
+    height: 100%; /* Ensure the body takes up the full viewport height */
+    margin: 0;    /* Remove default margin */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center;     /* Center vertically */
+}
+
+.container {
+    max-width: 1200px;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 30px;
+    width: 150%; /* Adjust to ensure it doesn’t overflow */
+    max-height: 500px;
+    height: 500px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    overflow: auto; /* Prevent content overflow if needed */
+}
+
+
+/* Header Styling */
+h1 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #343a40; /* Dark color for the heading */
+}
+
+/* List Group Item Styling */
+.list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    padding: 15px;
+    background-color: #f8f9fa; /* Light background color */
+    border: 1px solid #ddd; /* Light border for separation */
+}
+
+.list-group-item:hover {
+    background-color: #f1f3f5; /* Slightly darker background on hover */
+}
+
+/* Event Title Styling */
+.list-group-item h5 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #495057; /* Slightly lighter dark color for the event title */
+    margin-bottom: 5px;
+}
+
+/* Submission Date Styling */
+.list-group-item p {
+    font-size: 0.9rem;
+    color: #6c757d; /* Muted color for the submission date */
+    margin: 0;
+}
+
+/* Button Styling */
+.btn {
+    border-radius: 5px;
+    font-weight: 500;
+    padding: 8px 15px;
+    font-size: 0.9rem;
+}
+
+.btn-primary {
+    background-color: rgb(255, 166, 0);
+    border-color: rgb(255, 166, 0);
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-warning {
+    background-color:#0056b3;
+    border-color: #0056b3;
+    color: white;
+}
+
+.btn-warning:hover {
+    background-color:rgb(255, 166, 0);
+    border-color: rgb(255, 166, 0);
+ color: white;
+}
+
+/* Add spacing between buttons */
+.btn-sm + .btn-sm {
+    margin-left: 10px;
+}
+
+</style>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/ump-logo2.png') }}" alt="Logo">
+        </div>
+        <div class="links">
+           
+            <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('admin_home') }}">User Task</a>
+            <a href="{{ url_for('account') }}">Account Management</a>
+        
+            <a href="{{ url_for('manage_user') }}">Manage User</a> <!-- Added link -->
+            <div class="profile">
+                <div class="initials" onclick="toggleDropdown('profile-dropdown')">{{ user_initials }}</div>
+              <div class="dropdown" id="profile-dropdown">
+    <a href="{{ url_for('profile_lecture') }}">User-profile</a>
+    <a href="#settings">Settings</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</div>
+</div>
+</div>
+
+    </div>
+
+    <div class="container">
+        <h1 class="text-center mb-4">Module:{{ module_code }}: {{ module_name }}  </h1>
+    
+        <div class="list-group">
+            {% for submission in submissions %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5>{{ submission.event_title }}</h5>
+                        <p class="text-muted">submission date:{{ submission.submission_date }}</p>
+                    </div>
+                    <div>
+                        <a href="{{ submission.file_url }}" target="_blank" class="btn btn-primary btn-sm mr-2">Download file</a>
+                        <a href="{{ url_for('admin_submit', module_id=module_id, event_id=submission.event_id) }}" class="btn btn-warning btn-sm">Resubmit</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+</body>
+</html>

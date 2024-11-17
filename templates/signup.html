@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/head13.jpeg') }}" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0; /* Remove padding to fully center the box */
+            flex-direction: column;
+        }
+
+        .welcome-box {
+            background-color: #003366;
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px 10px 0 0;
+            width: 700px;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 0px;
+            transition: background-color 0.3s;
+        }
+
+        .welcome-box:hover {
+            background-color: #0056b3;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 700px;
+            text-align: center;
+        }
+
+        .container .image-box {
+            flex: 1;
+            padding-right: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: center; /* Horizontal centering */
+            align-items: center; /* Vertical centering */
+        }
+
+        .container .image-box img {
+            width: 300px; /* Adjustable width */
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 10px; /* Border radius for rounded corners */
+            display: block; /* Ensures centering works */
+            margin-left: auto;
+            margin-right: auto; /* Centers the image horizontally */
+            object-fit: contain; /* Ensure the image fits inside without cropping */
+            margin-top: 20px; /* Adjust this value to move the image down */
+            margin-bottom: 20px; /* Adjust this value to move the image up */
+        }
+
+        .container .form-box {
+            flex: 2;
+            text-align: left;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        input[type="submit"] {
+            background-color: #003366; /* Dark blue background */
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        input[type="submit"]:active {
+            background-color: #3399ff; /* Light blue when clicked */
+        }
+
+        .link-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #444;
+}
+
+.link-container a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.link-container a:hover {
+    text-decoration: underline;
+}
+
+
+    </style>
+</head>
+<body>
+
+    <div class="welcome-box">
+        Create an Account
+    </div>
+
+    <div class="container">
+
+        <div class="image-box">
+            <img src="{{ url_for('static', filename='images/10 years of UMP logo.jpeg') }}" alt="Sign Up Image">
+        </div>
+
+        <div class="form-box">
+            <!---<h2>Sign Up</h2> net time do not include this--->
+
+            {% if messg %}
+            <script>alert('{{ messg }}');</script>
+            {% endif %}
+
+            <form id="sign_up_form" method="POST" action="{{ url_for('sign_up') }}">
+
+                <input type="text" id="name" name="name" placeholder="First Name(s)" required>
+
+                <input type="text" id="surname" name="surname" placeholder="Surname" required>
+
+                <input type="email" id="email" name="email" placeholder="Email" required>
+
+                <input type="password" id="password" name="password" placeholder="Password" required>
+
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+
+                <label for="role">Role</label>
+                <select id="role" name="role" required>
+                    <option value="admin">Admin</option>
+                    <option value="lecturer">Lecturer</option>
+                    <option value="program_leader">Program Leader</option>
+                </select>
+
+                <input type="submit" value="Sign Up">
+
+                {% if message %}
+                <div class="alert alert-danger">{{ message }}</div>
+                {% endif %}
+
+            </form>
+
+            <div class="link-container">
+                <a href="{{ url_for('sign_in_page') }}">Already have an account</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(event) {
+            var password = document.getElementById('password').value;
+            var confirm_password = document.getElementById('confirm_password').value;
+
+            if (password !== confirm_password) {
+                event.preventDefault();
+                alert("Passwords do not match.");
+            }
+        });
+    </script>
+
+</body>
+</html>

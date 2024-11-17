@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign In</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/head13.jpeg') }}" type="image/x-icon">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef2f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+
+        .welcome-box {
+            background-color: #003366;
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px 10px 0 0;
+            width: 700px;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 0px;
+            transition: background-color 0.3s;
+        }
+
+        .welcome-box:hover {
+            background-color: #0056b3;
+        }
+
+        .container {
+            display: flex;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 700px;
+            text-align: left;
+            align-items: center;
+        }
+
+        .logo-box {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-right: 20px;
+        }
+
+        .logo-box img {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .form-box {
+            flex: 2;
+        }
+
+        input[type="email"], input[type="password"], select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        input[type="email"]::placeholder, input[type="password"]::placeholder {
+            color: #888;
+        }
+
+        input[type="submit"] {
+            background-color: #003366;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .link-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #444;
+        }
+
+        .link-container a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .link-container a:hover {
+            text-decoration: underline;
+        }
+
+        .alert.alert-danger {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="welcome-box">
+        Quality Management System
+    </div>
+    <div class="container">
+
+        <div class="logo-box">
+             <img src="{{ url_for('static', filename='images/UMP logo signin.jpeg') }}" alt="Sign In Image" class="logo">
+        </div>
+        <div class="form-box">
+            <form id="sign_in_form" method="POST" action="{{ url_for('sign_in') }}">
+                <input type="email" id="email" name="email" placeholder="Email" required><br>
+                <input type="password" id="password" name="password" placeholder="Password" required><br>
+
+                <input type="submit" value="Sign In">
+
+                {% if message %}
+                <div class="alert alert-danger">{{ message }}</div>
+                {% endif %}
+
+            </form>
+
+            <div class="link-container">
+                <a href="{{ url_for('forgot_password') }}">Reset Password</a>
+                
+            </div>
+        </div>
+    </div>
+</body>
+</html>
