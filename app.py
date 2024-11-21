@@ -6,7 +6,7 @@ from flask_mail import Mail, Message
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
- 
+from dotenv import load_env
 import requests
 import re
 from google.cloud.firestore_v1 import ArrayUnion
@@ -15,9 +15,9 @@ from datetime import timedelta, datetime
 from werkzeug.utils import secure_filename
 import os
 from flask import send_from_directory, abort
-
+load_env()
 app = Flask(__name__)
-
+app.config['TESTING'] = True
 # Secret Key
 app.secret_key = b'\x9dQ\x920\xce\x03\x13\x9f\xe2\xb0\xb14\xd0Fg\xbd\x08VQ\xff\xb8\xa7@\xa0'
 
@@ -64,20 +64,8 @@ mail = Mail(app)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 # Firebase Web API Key
-FIREBASE_WEB_API_KEY = "AIzaSyAExQi2gsAuGcPStXGlsodIbfyGWIeagUI"
+FIREBASE_WEB_API_KEY = os.getenv('FIREBASE_WEB_API_KEY')
 
 # Function to verify user credentials using Firebase Authentication REST API
 def verify_user_credentials(email, password):
@@ -105,37 +93,7 @@ def extend_session():
         session.permanent = True  # Extend the session for another 30 minutes
         return jsonify({"message": "Session extended successfully", "status": "extended"})
     return jsonify({"message": "Session expired", "status": "expired"}), 401
-
-# Sign up route
-@app.route('/sign_up', methods=['GET', 'POST'])
-def sign_up():
-    if request.method == 'POST':
-        name = request.form['name']
-        surname = request.form['surname']
-        email = request.form['email']
-        password = request.form['password']
-        role = request.form['role']
-
-        if not email.endswith('@ump.ac.za'):
-            message = 'Email must end with @ump.ac.za'
-            return render_template('signup.html', message=message)
-
-        try:
-            user = auth.create_user(
-                email=email,
-                password=password
-            )
-            db.collection('users').document(user.uid).set({
-                'name': name,
-                'surname': surname,
-                'email': email,
-                'role': role
-            })
-            return redirect(url_for('sign_in_page'))
-        except Exception as e:
-            return render_template('signup.html', message=str(e))
-
-    return render_template('signup.html')
+ 
 
 # Sign in route
 @app.route('/sign_in', methods=['GET', 'POST'])
@@ -732,116 +690,105 @@ def forgot_password():
  
 # Profile leaders route
 
-
-# Add module route
-@app.route('/add_module', methods=['POST'])
-@login_required
-def add_module():
-    module_name = request.form.get('module_name')
-    module_code = request.form.get('module_code')
-    qualification = request.form.get('qualification')
-    lecturer_email = request.form.get('lecturer_email')
-    program_leader_email = request.form.get('program_leader_email')
-
-    module_data = {
-        'module_name': module_name,
-        'module_code': module_code,
-        'qualification': qualification,
-        'lecturer_email': lecturer_email,
-        'program_leader_email': program_leader_email,
-        'events': []
-    }
-
-    db.collection('modules').add(module_data)
-    return redirect(url_for('manage_user'))
-
 # Add event route
 from datetime import datetime
+import requests
+from flask import request, redirect, url_for
 
 @app.route('/add_event', methods=['POST'])
 def add_event():
     title = request.form['title']
     description = request.form['description']
-    closing_date = request.form.get('closing_date')
-    file = request.files['file']
+    closing_date_str = request.form.get('closing_date')
     module_id = request.form['module_id']
     
-    # Upload file to Firebase Storage
-    file_path = f"events/{module_id}/{uuid.uuid4()}_{file.filename}"
-    bucket = storage.bucket()
-    blob = bucket.blob(file_path)
-    blob.upload_from_file(file)
-    file_url = blob.public_url
+    try:
+        # Convert closing date to datetime for validation and formatting
+        closing_date = datetime.strptime(closing_date_str, '%Y-%m-%d')
+    except ValueError:
+        print(f"Invalid closing date format: {closing_date_str}")
+        return "Invalid closing date format. Please use YYYY-MM-DD.", 400
 
     # Store event details in Firestore
     event_data = {
         'title': title,
         'description': description,
-        'closing_date': closing_date,
-        'file_url': file_url,
+        'closing_date': closing_date.strftime('%Y-%m-%d'),  # Save as string
         'module_id': module_id,
     }
     event_ref = db.collection('events').add(event_data)
 
- 
-    module = db.collection('modules').document(module_id).get().to_dict()
-    module_name = module.get('name', 'Unknown Module')
+    # Fetch module details
+    module_doc = db.collection('modules').document(module_id).get()
+    if not module_doc.exists:
+        print(f"Module with ID {module_id} does not exist in Firestore.")
+        return "Module not found.", 404
+
+    module = module_doc.to_dict()
+    module_name = module.get('module_name', 'Unknown Module')
+    module_code = module.get('module_code', 'Unknown Code')
     lecturer_email = module.get('lecturer_email')
 
-  # Send initial notification email and set up scheduled reminders
+    # Debugging output
+    print(f"Module ID: {module_id}, Name: {module_name}, Code: {module_code}")
+    print(f"Lecturer Email: {lecturer_email}")
 
-    print("=======>", lecturer_email)
+    # Send notification email if lecturer email exists
     if lecturer_email:
-        print("I am finding the email")
-        send_event_notification_email(lecturer_email, module_name, title, closing_date)
-        schedule_event_reminder(lecturer_email, module_name, title, closing_date)  # Schedule reminders
+        try:
+            print("Sending notification email...")
+            send_event_notification_email(
+                lecturer_email=lecturer_email,
+                module_code=module_code,
+                module_name=module_name,
+                event_name=title,
+                closing_date=closing_date.strftime('%Y-%m-%d')
+            )
+            print("Notification email sent successfully.")
+        except Exception as e:
+            print(f"Error sending notification email: {e}")
 
     return redirect(url_for('view_module', module_id=module_id))
-
-
 
 
 import requests
 from datetime import datetime
 
-
-def send_event_notification_email(lecturer_email, module_name, event_name, closing_date):
-    subject = f"New Event Added: {event_name} in {module_name}"
+def send_event_notification_email(lecturer_email, module_code, module_name, event_name, closing_date):
+    subject = f"New Submission Slot Added: {event_name} in {module_code}:{module_name}"
     body = f"""
     Dear Lecturer,
 
-    A new event titled {event_name} 
-    has been added to the module "{module_name}.
-    Closing Date: {closing_date}
+    A new submission slot for {event_name} 
+    has been added to {module_code}:{module_name}.
+    Closing Date:{closing_date}
 
-    Please remember to review this event. More details are available in your dashboard.
+    Please review this event on your dashboard.
 
-    Regards,
+    Regards,  
     Program Leader
     """
 
-
-    email_data = { 
+    email_data = {
         "email": lecturer_email,
         "message": body,
-        "subject":subject,
-        "validation":"Secure123"
+        "subject": subject,
+        "validation": "Secure123"
     }
 
-    # Send email using POST request
-    response = requests.post(
-        'https://ai.nextgensell.com/send-email',
-        json=email_data,
-        headers={'Content-Type': 'application/json'}
-    )
+    try:
+        response = requests.post(
+            'https://ai.nextgensell.com/send-email',
+            json=email_data,
+            headers={'Content-Type': 'application/json'}
+        )
 
-    # Check response
-    if response.status_code == 200:
-        print("Email sent successfully.")
-    else:
-        print("Failed to send email:", response.text)
-    
-
+        if response.status_code == 200:
+            print("Email sent successfully.")
+        else:
+            print(f"Failed to send email. Response: {response.text}")
+    except requests.RequestException as e:
+        print(f"Error while sending email: {e}")
 
 
 @app.route('/event_details/<event_id>')
@@ -932,46 +879,43 @@ def view_module(module_id):
     else:
         return "Module not found", 404
 
-@app.route('/delete_event/<event_id>', methods=['POST'])
-def delete_event(event_id):
+@app.route('/delete_event/<module_id>/<event_id>', methods=['POST'])
+def delete_event(module_id, event_id):
     # Reference to the events collection
     event_ref = db.collection('events').document(event_id)
     
     # Delete the event document
     event_ref.delete()
 
-    # Redirect to the view_event page after deletion
-    return redirect(url_for('view_event'))
+    # Redirect to the view_event page, filtered by module_id
+    return redirect(url_for('view_event', module_id=module_id))
 
-@app.route('/view_event')
-def view_event():
-    user_initials = (session['name'][0] + session['surname'][0]).upper()
-    events_ref = db.collection('events')
+
+@app.route('/view_event/<module_id>')
+def view_event(module_id):
+    user_initials = (session.get('name', '')[0] + session.get('surname', '')[0]).upper()
+    events_ref = db.collection('events').where('module_id', '==', module_id)  # Filter by module_id
     events = []
 
     for event_doc in events_ref.stream():
         event_data = event_doc.to_dict()
         event_data['id'] = event_doc.id  # Include the document ID as 'id'
-        
+
         # Retrieve module data based on module_id in the event
-        module_id = event_data.get('module_id')
-        if module_id:
-            module_ref = db.collection('modules').document(module_id)
-            module_doc = module_ref.get()
-            if module_doc.exists:
-                module_data = module_doc.to_dict()
-                event_data['module_name'] = module_data.get('module_name', 'Unknown')
-                event_data['module_code'] = module_data.get('module_code', 'Unknown')
-            else:
-                event_data['module_name'] = 'Unknown Module'
-                event_data['module_code'] = 'N/A'
+        module_ref = db.collection('modules').document(module_id)
+        module_doc = module_ref.get()
+        if module_doc.exists:
+            module_data = module_doc.to_dict()
+            event_data['module_name'] = module_data.get('module_name', 'Unknown')
+            event_data['module_code'] = module_data.get('module_code', 'Unknown')
         else:
             event_data['module_name'] = 'Unknown Module'
             event_data['module_code'] = 'N/A'
-        
+
         events.append(event_data)
 
-    return render_template('view_event.html', events=events, initials=user_initials)
+    return render_template('view_event.html', events=events, initials=user_initials, module_id=module_id)
+
 
 
 
@@ -1101,117 +1045,17 @@ def view_submission(module_id, event_id):
     return render_template('view_submission.html', module_id=module_id, event_id=event_id, submission=submission,initials=user_initials)
 
 
-@app.route('/view_submissions/<module_id>')
-@login_required
-def view_submissions(module_id):
-    user_initials = (session['name'][0] + session['surname'][0]).upper()
+ 
 
-    # Retrieve module details
-    module_ref = db.collection('modules').document(module_id)
-    module = module_ref.get().to_dict()
-    module_name = module.get('module_name', 'Unknown Module')
-    module_code = module.get('module_code', 'N/A')
-
-    # Get all events for the module
-    events_ref = db.collection('events').where('module_id', '==', module_id).stream()
-    event_details = {event.id: event.to_dict().get('title', 'Untitled Event') for event in events_ref}
-
-    # Retrieve all submissions for events in this module
-    submissions = []
-    for event_id, event_title in event_details.items():
-        submissions_ref = db.collection('submissions').where('event_id', '==', event_id).stream()
-        for submission in submissions_ref:
-            submission_data = submission.to_dict()
-            submission_data['event_title'] = event_title  # Include event title
-            
-            # Fetch the user who made the submission
-            user_id = submission_data.get('submitted_by')
-            if user_id:
-                user_ref = db.collection('users').document(user_id).get()
-                if user_ref.exists:
-                    user_data = user_ref.to_dict()
-                    submission_data['submitted_by_email'] = user_data.get('email', 'Unknown Email')
-                else:
-                    submission_data['submitted_by_email'] = 'Unknown Email'
-            else:
-                submission_data['submitted_by_email'] = 'Unknown Email'
-                
-            submissions.append(submission_data)
-
-    # Pass data to the template
-    return render_template(
-        'leader_submissions.html',
-        submissions=submissions,
-        initials=user_initials,
-        module_id=module_id,
-        module_name=module_name,
-        module_code=module_code
-    )
-
-
-
-@app.route('/download/<filename>')
-@login_required
-def download_file(filename):
-    upload_dir = '../../Downloads/QMS/QMS/uploads'
-    try:
-        return send_from_directory(upload_dir, filename, as_attachment=True)
-    except FileNotFoundError:
-        abort(404)
 
  
 
-@app.route('/upload_document/<module_id>')
-@login_required
-def upload_document(module_id):
-
-    user_initials = (session['name'][0] + session['surname'][0]).upper()
-    module = db.collection('modules').document(module_id).get().to_dict()
-    if module:
+ 
 
 
-        return render_template('upload_document.html', module=module, module_id=module_id, initials=user_initials)
-    else:
-        return "Module not found", 404
-# Sign-up and Sign-in pages route
+ 
 
-
-
-@app.route('/add_submission/<int:event_id>')
-def add_submission(event_id):
-    user_initials = (session['name'][0] + session['surname'][0]).upper()
-    # Handle submission logic here
-    return render_template('add_submission.html', event_id=event_id, initials=user_initials )
-
-
-
-@app.route('/track_submission/<module_id>/<event_id>')
-def track_submission(module_id, event_id):
-    user_initials = (session['name'][0] + session['surname'][0]).upper()
-
-    # Fetch event details
-    event_ref = db.collection('events').document(event_id)
-    event = event_ref.get()
-    
-    if event.exists:
-        event_title = event.to_dict().get('title', 'Event Title')
-        
-        # Fetch submissions for the event
-        submissions_ref = db.collection('submissions').where('event_id', '==', event_id)
-        submissions = [submission.to_dict() for submission in submissions_ref.stream()]
-
-        return render_template('track_submission.html', 
-                               event_title=event_title, 
-                               submissions=submissions,
-                               module_id=module_id,
-                               event_id=event_id, 
-                               initials=user_initials)
-    else:
-        return "Event not found", 404
-
-
-
-
+ 
 
 
 

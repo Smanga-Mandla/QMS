@@ -349,12 +349,14 @@
  
 
 <div class="event-panel">
-    
-    <h3>Click the button to view your event details:  {% set view_event_url = url_for('view_event') %}
-        <button onclick="window.location.href='{{ view_event_url }}'" class="view-event-btn">View Event</button>
-    </h3>
-   
+    <h3>Click the button below to view event details:</h3>
+    <button 
+        onclick="window.location.href='{{ url_for('view_event', module_id=module_id) }}'" 
+        class="view-event-btn">
+        View Events
+    </button>
 </div>
+
 
 </div>
  
@@ -453,7 +455,7 @@
 
 <script>
     function redirectToEvent() {
-        window.location.href = "{{ url_for('view_event') }}";
+        window.location.href = "{{ url_for('view_event', module_id=module_id) }}";
     }
 </script>
  

@@ -254,23 +254,25 @@
     </div>
     <div>
      
-{% for event in events %}
-    <div class="event-panel">
-        <div class="event-header">
-            <h2>{{ event.module_code }}: {{ event.module_name }}</h2>
-            <h3>{{ event.title }}</h3>
-        </div>
-        <div class="event-details">
-            <p><strong>Description:</strong> {{ event.description }}</p>
-            <p><strong>Closing Date:</strong> {{ event.closing_date }}</p>
-             
-        </div>
-        <form method="POST" action="{{ url_for('delete_event', event_id=event.id) }}">
-            <button type="submit" class="delete-btn">Delete Event</button>
-        </form>
-    </div>
-    <hr>
-{% endfor %}
+         
 
+        {% for event in events %}
+            <div class="event-panel">
+                <div class="event-header">
+                    <h2>{{ event.module_code }}: {{ event.module_name }}</h2>
+                    <h3>{{ event.title }}</h3>
+                </div>
+                <div class="event-details">
+                    <p><strong>Description:</strong> {{ event.description }}</p>
+                    <p><strong>Closing Date:</strong> {{ event.closing_date }}</p>
+                </div>
+                <form method="POST" action="{{ url_for('delete_event', module_id=module_id, event_id=event.id) }}">
+                    <button type="submit" class="delete-btn">Delete Event</button>
+                </form>
+                
+            </div>
+        {% else %}
+            <p>No events found for this module.</p>
+        {% endfor %}
 </body>
 </html>
