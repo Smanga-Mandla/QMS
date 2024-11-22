@@ -21,6 +21,29 @@ app.config['TESTING'] = True
 # Secret Key
 app.secret_key = b'\x9dQ\x920\xce\x03\x13\x9f\xe2\xb0\xb14\xd0Fg\xbd\x08VQ\xff\xb8\xa7@\xa0'
 
+
+
+import requests
+def download_json(url, filename):
+    """
+    Download a JSON file from a URL and save it to the current directory.
+    Args:
+        url (str): The URL of the JSON file.
+        filename (str): The name of the file to save.
+    """
+    response = requests.get(url)
+    if response.status_code == 200:
+        with open(filename, 'w') as file:
+            file.write(response.text)
+        print(f"File downloaded and saved as {filename}")
+    else:
+        print(f"Failed to download file. Status code: {response.status_code}")
+# Example usage:
+url = 'https://media.nextgensell.com/files/mandla/qms-flask-firebase.json'
+filename = 'qms-flask-firebase.json'
+download_json(url, filename)
+
+
 # Set the session lifetime
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=4)  # Session will expire after 30 minutes
 
