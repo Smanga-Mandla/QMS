@@ -88,7 +88,7 @@ mail = Mail(app)
 
 
 # Firebase Web API Key
-FIREBASE_WEB_API_KEY = "AIzaSyBQgGKn_9WRevZfibz_b9Tz4gz776SIjxM"
+FIREBASE_WEB_API_KEY = os.getenv('FIREBASE_WEB_API_KEY')
 
 # Function to verify user credentials using Firebase Authentication REST API
 def verify_user_credentials(email, password):
