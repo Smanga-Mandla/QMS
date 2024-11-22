@@ -6,7 +6,7 @@ from flask_mail import Mail, Message
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
-from dotenv import load_env
+from dotenv import load_dotenv
 import requests
 import re
 from google.cloud.firestore_v1 import ArrayUnion
@@ -15,7 +15,7 @@ from datetime import timedelta, datetime
 from werkzeug.utils import secure_filename
 import os
 from flask import send_from_directory, abort
-load_env()
+load_dotenv()
 app = Flask(__name__)
 app.config['TESTING'] = True
 # Secret Key
