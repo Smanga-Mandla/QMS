@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Submissions</title>
+
+    <style>
+      .module {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.event {
+    margin-left: 20px;
+    margin-bottom: 10px;
+}
+
+.event ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.event li {
+    margin-bottom: 5px;
+}
+
+         </style>
+</head>
+<body>
+    <h1>Track Submissions</h1>
+    {% for module in modules %}
+    <div class="module">
+        <h2>{{ module.name }}</h2>
+
+        {% for event in module.events %}
+            <div class="event">
+                <h3>{{ event.title }}</h3>
+                <p>{{ event.description }}</p>
+
+                <h4>Submissions</h4>
+                {% if event.submissions and event.submissions|length > 0 %}
+                    <ul>
+                        {% for submission in event.submissions %}
+                            <li>
+                                <a href="{{ submission.file_url }}" target="_blank">View Document</a> - 
+                                Submitted on {{ submission.submission_date.strftime('%Y-%m-%d') }} by {{ submission.submitted_by }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No submissions yet.</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endfor %}
+
+</body>
+</html>

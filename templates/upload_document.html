@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment Submission</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/add_submission.css') }}">
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo">
+        <img src="{{ url_for('static', filename='images/ump-logo2.png') }}" alt="Logo">
+    </div>
+    <div class="links">
+        <a href="{{ url_for('lecture_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('my_courses_lecture') }}">My Courses</a>
+        <div class="profile">
+            <div class="initials" onclick="toggleDropdown('profile-dropdown')">{{ initials }}</div>
+            <div class="notifications" onclick="toggleDropdown('notifications-dropdown')">&#128276;</div>
+            <div class="dropdown" id="profile-dropdown">
+                <a href="{{ url_for('profile_lecture') }}">User-profile</a>
+                <a href="#settings">Settings</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+            <div class="notifications-dropdown" id="notifications-dropdown">
+                <div>You have a new message</div>
+                <div>Assignment due tomorrow</div>
+                <div>Meeting at 3 PM</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="assignment-container">
+    <div class="assignment-header">
+        <h4>Module code / Module name</h4>
+        <h1>Name of the Event</h1>
+        <div class="assignment-dates">
+            <p><strong>Opened:</strong> Tuesday, 10 September 2024, 12:00 AM</p>
+            <p><strong>Due:</strong> Wednesday, 2 October 2024, 11:59 PM</p>
+        </div>
+    </div>
+
+    <div class="assignment-file">
+
+    </div>
+
+    <button class="btn btn-submit">Add Submission</button>
+
+    <div class="submission-status">
+        <h2>Submission status</h2>
+        <table>
+            <tr>
+                <th>Submission status</th>
+                <td>No submissions have been made yet</td>
+            </tr>
+            <tr>
+                <th>Grading status</th>
+                <td>Not graded</td>
+            </tr>
+            <tr>
+                <th>Time remaining</th>
+                <td> </td>
+            </tr>
+            <tr>
+                <th>Last modified</th>
+                <td>-</td>
+            </tr>
+            <tr>
+                <th>Submission comments</th>
+                <td><a href="#">Comments (0)</a></td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>

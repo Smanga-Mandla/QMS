@@ -1,0 +1,9 @@
+
+qms-flask-firebase.json
+venv
+.env
+htmlcov
+reports.zip
+.coverage
+.idea
+__pycache__

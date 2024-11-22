@@ -1,0 +1,8 @@
+APScheduler==3.10.4
+firebase_admin==6.5.0
+Flask==3.1.0
+flask_mail==0.10.0
+protobuf==5.28.3
+python-dotenv==1.0.1
+Requests==2.32.3
+Werkzeug==3.1.3
