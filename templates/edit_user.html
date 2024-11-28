@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div class="content">
+        <div class="panel">
+            <center><h3>Edit User</h3></center>
+            <form action="{{ url_for('update_user_roles') }}" method="POST">
+                <input type="hidden" name="user_id" value="{{ user_id }}">
+                
+                <label for="roles">Roles:</label>
+                <select id="roles" name="roles" multiple>
+                    <option value="lecturer" {% if 'lecturer' in user.role %}selected{% endif %}>Lecturer</option>
+                    <option value="program_leader" {% if 'program_leader' in user.role %}selected{% endif %}>Program Leader</option>
+                    <option value="admin" {% if 'admin' in user.role %}selected{% endif %}>Admin</option>
+                </select>
+                
+                <button type="submit">Update Roles</button>
+            </form>
+            
+        </div>
+    </div>
+
+</body>
+</html>

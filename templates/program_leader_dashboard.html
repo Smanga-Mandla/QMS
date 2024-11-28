@@ -38,7 +38,7 @@
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    margin: 20px auto;
+    margin: 100px auto;
     max-width: 1000px;
     top: 80px;
     
@@ -273,11 +273,7 @@
         </div>
     </div>
 
- <div class="content">
-        <div class="top-row">
-            <h2></h2><div class="welcome-message">Hi {{ session['name'] }}  ! &#128075;</div></h2>
-            
-        </div>
+ 
 
 <div id="session-warning-modal" style="display:none; position:fixed; top:20%; left:50%; transform:translate(-50%, -50%); z-index:999; background: #007BFF; padding:20px; border:1px solid #000;">
     <h2>Your session is about to expire!</h2>
@@ -287,7 +283,10 @@
 </div>
 
 <div class="contentt">
-    <h2>Dashboard</h2>
+    <div class="header">
+        <h2>Dashboard</h2>
+        <div class="welcome-message">Welcome Back {{ session['name'] }}! &#128075;</div>
+    </div>
          <div class="container">
 <div class="timeline-panel">
     <div class="timeline-header">
@@ -321,7 +320,7 @@
 <div class="upcoming-events-panel">
     <button id="togglePanelBtn" class="toggle-btn">▼</button>
 
-    <h2>Upcoming Events</h2>
+    <h2>Upcoming</h2>
 
     <!-- Loop through the submissions and create an event card for each -->
     {% for submission in submissions %}
@@ -506,8 +505,8 @@
 
 
 
-    let sessionTimeout = 10* 60 * 1000;  // 30 minutes in milliseconds
-    let warningTimeout = 9* 60 * 1000;  // Warning at 25 minutes
+    let sessionTimeout = 30* 60 * 1000;  // 30 minutes in milliseconds
+    let warningTimeout = 29* 60 * 1000;  // Warning at 25 minutes
     let sessionWarning;
 
     // Start the session timer when the page loads

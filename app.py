@@ -531,6 +531,27 @@ def admin_dashboard():
 
 
 
+@app.route('/add_module', methods=['POST'])
+@login_required
+def add_module():
+    module_name = request.form.get('module_name')
+    module_code = request.form.get('module_code')
+    qualification = request.form.get('qualification')
+    lecturer_email = request.form.get('lecturer_email')
+    program_leader_email = request.form.get('program_leader_email')
+
+    module_data = {
+        'module_name': module_name,
+        'module_code': module_code,
+        'qualification': qualification,
+        'lecturer_email': lecturer_email,
+        'program_leader_email': program_leader_email,
+        'events': []
+    }
+
+    db.collection('modules').add(module_data)
+    return redirect(url_for('manage_user'))
+
 
 
 @app.route('/manage_user', methods=['GET', 'POST'])
@@ -718,6 +739,13 @@ from datetime import datetime
 import requests
 from flask import request, redirect, url_for
 
+from apscheduler.schedulers.background import BackgroundScheduler
+from datetime import datetime, timedelta
+
+# Initialize the scheduler
+scheduler = BackgroundScheduler()
+scheduler.start()
+
 @app.route('/add_event', methods=['POST'])
 def add_event():
     title = request.form['title']
@@ -768,16 +796,68 @@ def add_event():
                 closing_date=closing_date.strftime('%Y-%m-%d')
             )
             print("Notification email sent successfully.")
+
+            # Schedule reminders
+            schedule_2_min_reminders(lecturer_email, module_code, module_name, title, closing_date)
         except Exception as e:
             print(f"Error sending notification email: {e}")
 
     return redirect(url_for('view_module', module_id=module_id))
 
+def schedule_2_min_reminders(lecturer_email, module_code, module_name, event_name, closing_date):
+    """Schedules reminders every 2 minutes until the closing date."""
+    now = datetime.now()
+    while now < closing_date:
+        next_reminder = now + timedelta(minutes=2)  # Change interval to 2 minutes
 
-import requests
-from datetime import datetime
+        # Add a job to the scheduler for each reminder
+        scheduler.add_job(
+            func=send_reminder_email,
+            args=[lecturer_email, module_code, module_name, event_name, closing_date.strftime('%Y-%m-%d')],
+            trigger='date',
+            run_date=next_reminder
+        )
+        now = next_reminder
+
+
+def send_reminder_email(lecturer_email, module_code, module_name, event_name, closing_date):
+    """Sends a reminder email."""
+    subject = f"Reminder: Submission Slot for {event_name} in {module_code}:{module_name}"
+    body = f"""
+    Dear Lecturer,
+
+    This is a reminder about the submission slot for {event_name} 
+    in {module_code}:{module_name}. The closing date is {closing_date}.
+
+    Please ensure you complete your tasks on time.
+
+    Regards,
+    Program Leader
+    """
+
+    email_data = {
+        "email": lecturer_email,
+        "message": body,
+        "subject": subject,
+        "validation": "Secure123"
+    }
+
+    try:
+        response = requests.post(
+            'https://ai.nextgensell.com/send-email',
+            json=email_data,
+            headers={'Content-Type': 'application/json'}
+        )
+
+        if response.status_code == 200:
+            print("Reminder email sent successfully.")
+        else:
+            print(f"Failed to send reminder email. Response: {response.text}")
+    except requests.RequestException as e:
+        print(f"Error sending reminder email: {e}")
 
 def send_event_notification_email(lecturer_email, module_code, module_name, event_name, closing_date):
+    """Sends the initial notification email."""
     subject = f"New Submission Slot Added: {event_name} in {module_code}:{module_name}"
     body = f"""
     Dear Lecturer,
@@ -812,6 +892,7 @@ def send_event_notification_email(lecturer_email, module_code, module_name, even
             print(f"Failed to send email. Response: {response.text}")
     except requests.RequestException as e:
         print(f"Error while sending email: {e}")
+
 
 
 @app.route('/event_details/<event_id>')
@@ -964,7 +1045,6 @@ def submit_document(module_id, event_id):
     event_title = event.to_dict().get('title') if event.exists else "Event"
 
     return render_template('submission.html', module_id=module_id, event_id=event_id, event_title=event_title, initials=user_initials)
-
 @app.route('/process_submission/<module_id>/<event_id>', methods=['POST'])
 def process_submission(module_id, event_id):
     user_id = session.get('user_id')
@@ -1002,7 +1082,63 @@ def process_submission(module_id, event_id):
         # Add a new submission if none exists
         db.collection('submissions').add(submission_data)
 
+    # Fetch program leader's email and module details
+    module_doc = db.collection('modules').document(module_id).get()
+    if module_doc.exists:
+        module_data = module_doc.to_dict()
+        program_leader_email = module_data.get('program_leader_email')
+        module_code = module_data.get('module_code')  # Correct field for module code
+        module_name = module_data.get('module_name')  # Correct field for module name
+        event_title = module_data.get('event_title', 'Event')
+
+        if program_leader_email:
+            send_submission_notification_email(
+                program_leader_email,
+                module_name,
+                module_code,
+                event_title,
+                user_id
+            )
+
     return redirect(url_for('view_module_l', module_id=module_id))
+
+
+def send_submission_notification_email(program_leader_email, module_name, module_code, event_name, lecturer_email):
+    """Sends email notification to the program leader after submission."""
+    subject = f"New Submission for Event: {event_name}"
+    body = f"""
+    Dear Program Leader,
+
+    A new submission has been made  in module {module_code}:{module_name} 
+    
+    
+    Please review the submission on the  dashboard.
+
+    Regards,
+    QMS System
+    """
+
+    email_data = {
+        "email": program_leader_email,
+        "message": body,
+        "subject": subject,
+        "validation": "Secure123"
+    }
+
+    try:
+        response = requests.post(
+            'https://ai.nextgensell.com/send-email',
+            json=email_data,
+            headers={'Content-Type': 'application/json'}
+        )
+
+        if response.status_code == 200:
+            print("Notification email sent to program leader successfully.")
+        else:
+            print(f"Failed to send email. Response: {response.text}")
+    except requests.RequestException as e:
+        print(f"Error while sending email: {e}")
+
 
 
 
@@ -1069,6 +1205,53 @@ def view_submission(module_id, event_id):
 
 
  
+
+@app.route('/view_submissions/<module_id>')
+@login_required
+def view_submissions(module_id):
+    user_initials = (session['name'][0] + session['surname'][0]).upper()
+
+    # Retrieve module details
+    module_ref = db.collection('modules').document(module_id)
+    module = module_ref.get().to_dict()
+    module_name = module.get('module_name', 'Unknown Module')
+    module_code = module.get('module_code', 'N/A')
+
+    # Get all events for the module
+    events_ref = db.collection('events').where('module_id', '==', module_id).stream()
+    event_details = {event.id: event.to_dict().get('title', 'Untitled Event') for event in events_ref}
+
+    # Retrieve all submissions for events in this module
+    submissions = []
+    for event_id, event_title in event_details.items():
+        submissions_ref = db.collection('submissions').where('event_id', '==', event_id).stream()
+        for submission in submissions_ref:
+            submission_data = submission.to_dict()
+            submission_data['event_title'] = event_title  # Include event title
+            
+            # Fetch the user who made the submission
+            user_id = submission_data.get('submitted_by')
+            if user_id:
+                user_ref = db.collection('users').document(user_id).get()
+                if user_ref.exists:
+                    user_data = user_ref.to_dict()
+                    submission_data['submitted_by_email'] = user_data.get('email', 'Unknown Email')
+                else:
+                    submission_data['submitted_by_email'] = 'Unknown Email'
+            else:
+                submission_data['submitted_by_email'] = 'Unknown Email'
+                
+            submissions.append(submission_data)
+
+    # Pass data to the template
+    return render_template(
+        'leader_submissions.html',
+        submissions=submissions,
+        initials=user_initials,
+        module_id=module_id,
+        module_name=module_name,
+        module_code=module_code
+    )
 
 
  

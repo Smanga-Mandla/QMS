@@ -19,6 +19,7 @@ body, html {
     position: fixed; /* Keeps the navbar fixed at the top */
     width: 100%; /* Ensures navbar spans the full width */
     z-index: 1000; /* Keeps the navbar above other content */
+    height: 60px;
 }
 
 .navbar .logo {

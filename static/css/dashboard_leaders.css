@@ -14,11 +14,12 @@ body, html {
     align-items: center;
     justify-content: space-between;
     padding: 10px 20px;
-    background-color:  white;
+    background-color: #fff !important;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    width: 100%;
-    z-index: 1000;
+    position: fixed; /* Keeps the navbar fixed at the top */
+    width: 100%; /* Ensures navbar spans the full width */
+    z-index: 1000; /* Keeps the navbar above other content */
+    height: 40px;
 }
 
 .navbar .logo {
@@ -128,12 +129,41 @@ body, html {
     width: 100%;
 }
 
-.welcome-message {
-    position: fixed;
-    font-size: 30px;
-   
-    color: #333;
+.contentt .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
 }
+
+.welcome-message {
+    font-size: 28px;
+    animation: slide-in 5s ease-out forwards, fade-out 5s ease-out 14s forwards; /* Slide in and fade out */
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+@keyframes slide-in {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+ 
 
 /* Sidebar Styles */
 .sidebar {
