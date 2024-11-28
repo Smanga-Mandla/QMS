@@ -343,23 +343,24 @@
                 <input type="text" name="surname" placeholder="Surname" required>
                 <input type="email" name="email" placeholder="Email (must end with @ump.ac.za)" required>
                   
-                <label for="qualification">Qualification:</label>
-                <select id="qualification" name="qualification" required>
-                <option value="Higher Certificate in Diploma in ICT">Higher Certificate in ICT</option>
-                <option value="Diploma in ICT">Diploma in ICT</option>
-                 <option value="Bachelor in ICT">Bachelor in ICT</option>
-                 <option value="Postgraduate  in ICT">Postgraduate Diploma in ICT</option>
-              </select>
-              <label for="password">Password:</label>
+                 
+            
+                <label for="password">Password:</label>
                 <input type="password" name="password" required> <!-- Default Password -->
+            
                 <select name="role" required>
                     <option value="lecturer">Lecturer</option>
                     <option value="program_leader">Program Leader</option>
-                    
                 </select>
+            
+                <!-- Display error message if provided -->
+                {% if message %}
+                <p style="color: red;">{{ message }}</p>
+                {% endif %}
+            
                 <button type="submit">Add User</button>
-              
             </form>
+            
         </div>
 
         
@@ -383,11 +384,13 @@
 
                     <label for="qualification">Qualification:</label>
                     <select id="qualification" name="qualification" required>
-                        <option value="HICT">HICT</option>
-                        <option value="DIPICT">DIPICT</option>
-                        <option value="BICT">BICT</option>
+                        <option value="" disabled selected>Select qualification</option>
+                        <option value="Higher Certificate in Diploma in ICT">Higher Certificate in ICT</option>
+                        <option value="Diploma in ICT">Diploma in ICT</option>
+                        <option value="Bachelor in ICT">Bachelor in ICT</option>
+                        <option value="Postgraduate  in ICT">Postgraduate Diploma in ICT</option>
                     </select>
-
+                
                     <label for="lecturer-email">Lecturer Email:</label>
                     <input type="email" id="lecturer-email" name="lecturer_email" required>
 
@@ -419,8 +422,8 @@
     </script>
 
 <script>
-    let sessionTimeout = 10* 60 * 1000;  // 30 minutes in milliseconds
-    let warningTimeout = 9* 60 * 1000;  // Warning at 25 minutes
+    let sessionTimeout = 100* 60 * 1000;  // 30 minutes in milliseconds
+    let warningTimeout = 10* 60 * 1000;  // Warning at 25 minutes
     let sessionWarning;
 
     // Start the session timer when the page loads

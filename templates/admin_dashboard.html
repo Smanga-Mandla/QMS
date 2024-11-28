@@ -120,7 +120,7 @@
             <div class="profile">
                 <div class="initials" onclick="toggleDropdown('profile-dropdown')">{{ initials }}</div>
               <div class="dropdown" id="profile-dropdown">
-    <a href="{{ url_for('profile_lecture') }}">User-profile</a>
+    <a href="{{ url_for('admin_profile') }}">User-profile</a>
     <a href="#settings">Settings</a>
     <a href="{{ url_for('logout') }}">Logout</a>
 </div>
@@ -152,8 +152,8 @@
     </footer>
 
     <script>
-        let sessionTimeout = 30* 60 * 1000;  // 30 minutes in milliseconds
-        let warningTimeout = 29* 60 * 1000;  // Warning at 25 minutes
+        let sessionTimeout = 100* 60 * 1000;  // 30 minutes in milliseconds
+        let warningTimeout = 10* 60 * 1000;  // Warning at 25 minutes
         let sessionWarning;
     
         // Start the session timer when the page loads

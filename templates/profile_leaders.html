@@ -47,17 +47,14 @@
         <input type="text" value="{{ session['email'] }}" readonly>
         <label>Role:</label>
         <input type="text" value="{{ role }}" readonly>
-        <label>Qualification:</label>
-        <input type="text" value="{{ qualification }}" readonly>
-        <label>Access Time:</label>
-        <input type="text" id="access-time" value="{{ access_time }}" readonly>
+        
     </div>
     <input type="file" id="file-input" accept="image/*" style="display:none;">
     <script src="{{ url_for('static', filename='js/profile_leaders.js') }}"></script>
     
 <script>
-    let sessionTimeout = 10* 60 * 1000;  // 30 minutes in milliseconds
-    let warningTimeout = 9* 60 * 1000;  // Warning at 25 minutes
+    let sessionTimeout = 100* 60 * 1000;  // 30 minutes in milliseconds
+    let warningTimeout = 10* 60 * 1000;  // Warning at 25 minutes
     let sessionWarning;
 
     // Start the session timer when the page loads

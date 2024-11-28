@@ -183,7 +183,7 @@
                 <div class="initials" onclick="toggleDropdown('profile-dropdown')">{{ user_initials }}</div>
                 <div class="notifications" onclick="toggleDropdown('notifications-dropdown')">&#128276;</div>
               <div class="dropdown" id="profile-dropdown">
-    <a href="{{ url_for('profile_lecture') }}">User-profile</a>
+    <a href="{{ url_for('admin_profile') }}">User-profile</a>
     <a href="#settings">Settings</a>
     <a href="{{ url_for('logout') }}">Logout</a>
 </div>

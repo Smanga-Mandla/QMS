@@ -13,8 +13,11 @@
             <img src="{{ url_for('static', filename='images/ump-logo2.png') }}" alt="Logo">
         </div>
         <div class="links">
-              <a href="{{ url_for('lecture_dashboard') }}">Dashboard</a>
-            <a href="{{ url_for('my_courses_lecture') }}">My Courses</a>
+            <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('admin_home') }}">User Task</a>
+            <a href="{{ url_for('account') }}">Account Management</a>
+        
+            <a href="{{ url_for('manage_user') }}">Manage User</a> <!-- Added link -->
 
             <div class="profile">
                 <div class="initials" onclick="toggleDropdown('profile-dropdown')">{{ initials }}</div>
@@ -47,11 +50,45 @@
         <input type="text" value="{{ session['email'] }}" readonly>
         <label>Role:</label>
         <input type="text" value="{{ role }}" readonly>
+         
         
     </div>
     <input type="file" id="file-input" accept="image/*" style="display:none;">
     <script src="{{ url_for('static', filename='js/profile_lecture.js') }}"></script>
-    <script>
+    
+<script>
+    let sessionTimeout = 100* 60 * 1000;  // 30 minutes in milliseconds
+    let warningTimeout = 10* 60 * 1000;  // Warning at 25 minutes
+    let sessionWarning;
+
+    // Start the session timer when the page loads
+    window.onload = function() {
+        sessionWarning = setTimeout(showSessionWarning, warningTimeout);
+    };
+
+    // Function to show the session expiration warning modal
+    function showSessionWarning() {
+        let extendModal = document.getElementById('session-warning-modal');
+        extendModal.style.display = 'block';
+    }
+
+    // Function to extend the session by making an AJAX call to the server
+    function extendSession() {
+        fetch('/extend_session', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'extended') {
+
+                    // Reset the session timer
+                    clearTimeout(sessionWarning);
+                    sessionWarning = setTimeout(showSessionWarning, warningTimeout);
+                    closeModal();
+                } else {
+                    alert("Your session has expired, please log in again.");
+                    window.location.href = '/sign_in_page';
+                }
+            });
+    }
 
     // Function to log out
     function logout() {

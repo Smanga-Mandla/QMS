@@ -124,6 +124,7 @@ def sign_in():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
+        selected_role = request.form.get('role')  # Get the selected role from the form
 
         # Email format validation
         if not re.match(r'\d{9}@ump\.ac\.za$', email):
@@ -134,34 +135,43 @@ def sign_in():
             return render_template('signin.html', message='Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.')
 
         try:
-            # Verify user credentials
+            # Verify user credentials using Firebase Authentication
             response = verify_user_credentials(email, password)
             if 'error' in response:
                 return render_template('signin.html', message=response['error']['message'])
 
-            user = auth.get_user_by_email(email)
-            session['user_id'] = user.uid
-            session['email'] = email
+            # Fetch all users with the given email from Firestore
+            user_docs = db.collection('users').where('email', '==', email).stream()
 
-            # Get user details from Firestore
-            user_doc = db.collection('users').document(user.uid).get()
-            if user_doc.exists:
+            # Match the selected role with one of the users
+            matched_user = None
+            for user_doc in user_docs:
                 user_data = user_doc.to_dict()
-                session['name'] = user_data['name']
-                session['surname'] = user_data['surname']
-                session['role'] = user_data['role']
+                if user_data.get('role') == selected_role:
+                    matched_user = user_data
+                    matched_user['uid'] = user_doc.id
+                    break
 
-                session.permanent = True  # Make the session permanent to enable expiration
+            if not matched_user:
+                return render_template('signin.html', message='User is not authorized for the selected role.')
 
-                # Redirect based on role
-                if session['role'] == 'admin':
-                    return redirect(url_for('admin_dashboard'))
-                elif session['role'] == 'lecturer':
-                    return redirect(url_for('lecture_dashboard'))
-                elif session['role'] == 'program_leader':
-                    return redirect(url_for('program_leader_dashboard'))
+            # Set session for the matched user
+            session['user_id'] = matched_user['uid']
+            session['email'] = matched_user['email']
+            session['name'] = matched_user['name']
+            session['surname'] = matched_user['surname']
+            session['role'] = matched_user['role']
+
+            # Redirect based on role
+            if selected_role == 'admin':
+                return redirect(url_for('admin_dashboard'))
+            elif selected_role == 'lecturer':
+                return redirect(url_for('lecture_dashboard'))
+            elif selected_role == 'program_leader':
+                return redirect(url_for('program_leader_dashboard'))
             else:
-                return render_template('signin.html', message='User role not found')
+                return render_template('signin.html', message='Invalid role selected.')
+
         except Exception as e:
             return render_template('signin.html', message=str(e))
 
@@ -563,6 +573,12 @@ def manage_user():
 
     return render_template('manage_user.html', users=users, initials=user_initials)
 
+from flask import Flask, request, redirect, render_template, url_for
+from firebase_admin import firestore, auth
+
+# Initialize Firebase Firestore
+db = firestore.client()
+import re
 
 @app.route('/add_user', methods=['POST'])
 def add_user():
@@ -571,42 +587,72 @@ def add_user():
     email = request.form['email']
     password = request.form['password']
     role = request.form['role']
-    qualification = request.form['qualification']
+    
 
+    # Check if the email ends with @ump.ac.za
     if not email.endswith('@ump.ac.za'):
         return render_template('manage_user.html', message='Email must end with @ump.ac.za')
 
-    try:
-        # Create user in Firebase Auth
-        user = auth.create_user(
-            email=email,
-            password=password
+    # Strong password validation
+    password_pattern = r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+    if not re.match(password_pattern, password):
+        return render_template(
+            'manage_user.html',
+            message='Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.'
         )
 
-        # Add user data to Firestore
-        db.collection('users').document(user.uid).set({
+    try:
+        # Check how many users with this email already exist in Firestore
+        user_entries = db.collection('users').where('email', '==', email).stream()
+        user_count = sum(1 for _ in user_entries)
+
+        if user_count >= 3:
+            return render_template('manage_user.html', message='User with this email has already been added 3 times.')
+
+        # If it's the first user, register it with Firebase Authentication
+        if user_count == 0:
+            auth.create_user(
+                email=email,
+                password=password
+            )
+
+        # Add user data to Firestore, allowing duplicates
+        db.collection('users').add({
             'name': name,
             'surname': surname,
             'email': email,
             'role': role,
-            'qualification': qualification,
+            
             'is_approved': True,  # Automatically approved
         })
 
         return redirect(url_for('account'))
+
     except Exception as e:
         return render_template('account.html', message=str(e))
 
-
 @app.route('/delete_user', methods=['POST'])
 def delete_user():
-    user_id = request.form['user_id']
+    email = request.form['email']
+    role = request.form['role']  # Get the role from the form
+
     try:
-        # Delete user from Firebase Auth
-        auth.delete_user(user_id)
-        # Delete user document from Firestore
-        db.collection('users').document(user_id).delete()
+        # Delete the specific Firestore document based on email and role
+        user_documents = db.collection('users').where('email', '==', email).where('role', '==', role).stream()
+        for doc in user_documents:
+            db.collection('users').document(doc.id).delete()
+
+        # Check if there are other Firestore documents with the same email
+        remaining_users = db.collection('users').where('email', '==', email).stream()
+        if not any(remaining_users):  # If no more documents exist for the email
+            try:
+                user = auth.get_user_by_email(email)
+                auth.delete_user(user.uid)  # Delete the user from Firebase Auth
+            except Exception:
+                pass  # Ignore if the user is already deleted or doesn't exist in Auth
+
         return redirect(url_for('account'))
+
     except Exception as e:
         return render_template('account.html', message=str(e))
 
@@ -695,6 +741,27 @@ def profile_leaders():
 
     return redirect(url_for('sign_in_page'))
 
+@app.route('/admin_profile')
+@login_required
+def admin_profile():
+    if 'role' in session:
+        user_id = session.get('user_id')  # Use an ID or email to fetch user data if needed
+        user_data = db.collection('users').document(user_id).get().to_dict()
+
+        # Set values in session or directly pass to the template
+        session['qualification'] = user_data.get('qualification', 'N/A')
+        session['access_time'] = user_data.get('access_time', 'N/A')  # Make sure to set access time when user logs in
+
+        user_initials = (session['name'][0] + session['surname'][0]).upper()
+        return render_template(
+            'admin_profile.html',
+            initials=user_initials,
+            role=session['role'],
+            qualification=session['qualification'],
+            access_time=session['access_time']
+        )
+
+    return redirect(url_for('sign_in_page'))
 
 
 
